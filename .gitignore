@@ -1,0 +1,7 @@
+.venv_lock/
+.venv/
+repo.zip
+zip_repo.py
+__pycache__/
+*.pyc
+.env
