@@ -11,13 +11,13 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - DATABASE_URL=postgresql://citybus_user:citybus_secure_pass_2026@postgres:5432/citybus_db
+      - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=redis://redis:6379/0
       - CELERY_BROKER_URL=redis://redis:6379/0
-      - SECRET_KEY=citybus-enterprise-secret-key-2026-secure
-      - JWT_SECRET_KEY=citybus-jwt-token-secret-2026
-      - RAZORPAY_KEY_ID=rzp_test_citybus_sandbox_key
-      - RAZORPAY_KEY_SECRET=rzp_secret_citybus_test_2026
+      - SECRET_KEY=${SECRET_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
       - CORS_ORIGINS=*
     depends_on:
       postgres:
@@ -35,7 +35,7 @@ services:
     environment:
       POSTGRES_DB: citybus_db
       POSTGRES_USER: citybus_user
-      POSTGRES_PASSWORD: citybus_secure_pass_2026
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:

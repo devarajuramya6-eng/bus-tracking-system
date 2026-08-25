@@ -33,7 +33,7 @@ docker-compose logs -f
 |---|---|---|
 | `DATABASE_URL` | PostgreSQL or SQLite connection string | `sqlite:///backend/citybus.db` |
 | `REDIS_URL` | Redis cache and message broker URL | `redis://127.0.0.1:6379/0` |
-| `SECRET_KEY` | Flask session and HMAC cryptography key | `citybus-enterprise-secret-key-2026-secure` |
-| `JWT_SECRET_KEY` | 32+ character JWT signing key | `citybus-jwt-token-secret-2026-enterprise-production-secure` |
-| `RAZORPAY_KEY_ID` | Razorpay API sandbox key ID | `rzp_test_citybus_sandbox_key` |
-| `RAZORPAY_KEY_SECRET` | Razorpay API sandbox secret | `rzp_secret_citybus_test_2026` |
+| `SECRET_KEY` | Flask session and HMAC cryptography key | `<SET_IN_ENVIRONMENT>` |
+| `JWT_SECRET_KEY` | 32+ character JWT signing key | `<SET_IN_ENVIRONMENT>` |
+| `RAZORPAY_KEY_ID` | Razorpay API sandbox key ID | `<SET_IN_ENVIRONMENT>` |
+| `RAZORPAY_KEY_SECRET` | Razorpay API sandbox secret | `<SET_IN_ENVIRONMENT>` |

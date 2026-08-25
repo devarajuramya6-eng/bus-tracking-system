@@ -1,19 +1,22 @@
-# Dependency Documentation
+# Dependencies
 
-## Python Environment
-*   **Version:** Python 3 (from system environment)
-*   **Package Manager:** pip
-*   **Manifest:** `requirements.txt`
-*   **Lockfile:** `requirements.lock`
-*   **Backend Installation:** `pip install -r requirements.txt`
+This project relies on the following technologies and libraries:
 
-## Core Technologies Used
-*   **PostgreSQL:** Database adapter `psycopg2-binary` is used.
-*   **Redis:** In-memory store `redis` is used.
-*   **Socket.IO:** Real-time communications via `Flask-SocketIO` and `eventlet`.
-*   **Docker:** Containerized setup utilizing `Dockerfile` and `docker-compose.yml`.
-*   **Maps:** Frontend relies on Leaflet.js with OSM/Carto tiles for map rendering.
+## Backend
 
-## Frontend Environment
-*   No Node.js/npm dependencies are bundled or managed via `package.json`.
-*   All frontend assets (CSS, JS) are vanilla implementations without a build step.
+*   **Python**: Version 3.9+ recommended.
+*   **Package Manager**: `pip`.
+*   **Manifest**: `requirements.txt`.
+*   **Lockfile**: `requirements.lock` (run `pip install -r requirements.lock` to install pinned dependencies).
+*   **Frameworks & Libraries**:
+    *   Flask (Web framework)
+    *   Socket.IO (Real-time communication via Flask-SocketIO)
+    *   Celery (Background task processing)
+*   **Infrastructure**:
+    *   PostgreSQL (Relational database)
+    *   Redis (Message broker and caching)
+
+## Frontend
+
+*   **Framework**: Vanilla HTML, CSS, JavaScript (No Node/npm dependencies or build steps).
+*   **Map Library**: Leaflet (loaded via CDN).

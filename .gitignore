@@ -5,3 +5,5 @@ zip_repo.py
 __pycache__/
 *.pyc
 .env
+.env.*
+!.env.template
