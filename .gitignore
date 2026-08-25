@@ -1,10 +1,9 @@
 .venv_lock/
 .venv/
-repo.zip
-zip_repo.py
+*.zip
 __pycache__/
 *.pyc
 .env
 .env.*
 !.env.template
-repo_with_git.zip
+
