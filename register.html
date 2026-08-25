@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Account — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at top, var(--cb-brand-primary-light), var(--cb-bg-subtle) 70%); padding: 1.5rem;">
+
+  <div style="width: 100%; max-width: 440px;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <a href="index.html" class="logo" style="justify-content: center; margin-bottom: 0.5rem; text-decoration: none;">
+        <div class="logo-icon"><i class="fa-solid fa-bus"></i></div>
+        <div class="logo-text" style="font-size: 1.5rem;">City<span>Bus</span></div>
+      </a>
+      <p style="color: var(--cb-text-secondary); font-size: 0.9rem;">Create your passenger mobility account</p>
+    </div>
+
+    <div class="card" style="padding: 2rem; box-shadow: var(--cb-shadow-xl);">
+      <form id="register-form">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="reg-name" placeholder="e.g. Ananya Sharma" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="reg-email" placeholder="e.g. ananya@gmail.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Mobile Number</label>
+          <input type="tel" class="form-control" id="reg-phone" placeholder="e.g. +91 98480 12345">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" id="reg-pass" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+          Create Account
+        </button>
+      </form>
+    </div>
+
+    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--cb-text-muted);">
+      Already registered? <a href="login.html" style="color: var(--cb-brand-primary); font-weight: 600; text-decoration: none;">Sign In</a>
+    </div>
+  </div>
+
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script>
+    document.getElementById('register-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const phone = document.getElementById('reg-phone').value;
+      const pass = document.getElementById('reg-pass').value;
+
+      try {
+        if (window.CityBusAPI) {
+          const res = await window.CityBusAPI.register({ name, email, phone, password: pass });
+          if (res && res.success) {
+            window.location.href = 'index.html';
+            return;
+          }
+        }
+      } catch {}
+
+      window.location.href = 'index.html';
+    };
+  </script>
+</body>
+</html>

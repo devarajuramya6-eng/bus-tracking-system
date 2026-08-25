@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Bus Telemetry & Stops — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-bus"></i></div>
+        <div class="logo-text">City<span>Bus</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="passenger-map.html"><i class="fa-solid fa-map-location-dot"></i> Live Map</a></li>
+        <li><a href="buses.html" class="active"><i class="fa-solid fa-bus-simple"></i> Buses</a></li>
+        <li><a href="routes.html"><i class="fa-solid fa-signs-post"></i> Routes</a></li>
+        <li><a href="tickets.html"><i class="fa-solid fa-ticket"></i> Book Pass</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="icon-btn" id="cmd-palette-btn"><i class="fa-solid fa-terminal"></i></button>
+        <button class="theme-toggle" id="theme-toggle-btn"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 2rem auto; padding: 0 1.5rem;">
+    <!-- Top Details Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <a href="buses.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        <div>
+          <h1 style="font-size: 2rem; font-weight: 800; color: var(--cb-text-primary);" id="detail-bus-num">
+            Bus Loading...
+          </h1>
+          <div style="font-size: 0.9rem; color: var(--cb-text-secondary);" id="detail-bus-route">
+            Transit Corridor
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span class="badge badge-success" id="detail-bus-status">On Route</span>
+        <a href="tickets.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-ticket"></i> Book Ticket for this Bus</a>
+      </div>
+    </div>
+
+    <!-- 4-Stat Telemetry Strip -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+      <div class="card" style="padding: 1.25rem;">
+        <div style="font-size: 0.8rem; color: var(--cb-text-muted); margin-bottom: 0.25rem;">Live Speed</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--cb-text-primary);" id="detail-speed">0 km/h</div>
+      </div>
+
+      <div class="card" style="padding: 1.25rem;">
+        <div style="font-size: 0.8rem; color: var(--cb-text-muted); margin-bottom: 0.25rem;">Next Scheduled Stop</div>
+        <div style="font-size: 1.2rem; font-weight: 700; color: var(--cb-text-primary);" id="detail-next-stop">Loading...</div>
+      </div>
+
+      <div class="card" style="padding: 1.25rem;">
+        <div style="font-size: 0.8rem; color: var(--cb-text-muted); margin-bottom: 0.25rem;">Dynamic Arrival ETA</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--cb-brand-primary);" id="detail-eta">-- min</div>
+      </div>
+
+      <div class="card" style="padding: 1.25rem;">
+        <div style="font-size: 0.8rem; color: var(--cb-text-muted); margin-bottom: 0.25rem;">Assigned Driver</div>
+        <div style="font-size: 1.2rem; font-weight: 700; color: var(--cb-text-primary);" id="detail-driver">Ravi Kumar</div>
+      </div>
+    </div>
+
+    <!-- Map & Stop Progression Split -->
+    <div style="display: grid; grid-template-columns: 1fr 380px; gap: 2rem;">
+      <div class="card" style="padding: 0.5rem; overflow: hidden; height: 520px;">
+        <div id="bus-detail-map" style="width: 100%; height: 100%; border-radius: var(--cb-radius-md);"></div>
+      </div>
+
+      <div class="card" style="padding: 1.5rem; height: 520px; overflow-y: auto;">
+        <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 1rem;">
+          Route Stop Progression
+        </h3>
+        <div class="route-timeline" id="bus-stops-timeline">
+          <!-- Stops injected by js/passenger/bus_details.js -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/command_palette.js"></script>
+  <script src="js/map/map_engine.js"></script>
+  <script src="js/map/interpolator.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/passenger/bus_details.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Digital Pass & Ticketing — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-bus"></i></div>
+        <div class="logo-text">City<span>Bus</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="passenger-map.html"><i class="fa-solid fa-map-location-dot"></i> Live Map</a></li>
+        <li><a href="journey-planner.html"><i class="fa-solid fa-route"></i> Plan Trip</a></li>
+        <li><a href="buses.html"><i class="fa-solid fa-bus-simple"></i> Buses</a></li>
+        <li><a href="routes.html"><i class="fa-solid fa-signs-post"></i> Routes</a></li>
+        <li><a href="tickets.html" class="active"><i class="fa-solid fa-ticket"></i> Book Pass</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="icon-btn" id="cmd-palette-btn"><i class="fa-solid fa-terminal"></i></button>
+        <button class="theme-toggle" id="theme-toggle-btn"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 800px; margin: 2.5rem auto; padding: 0 1.5rem;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <span class="badge badge-primary">Instant Mobile Checkout</span>
+      <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--cb-text-primary); margin-top: 0.35rem;">
+        Purchase Digital Bus Pass
+      </h1>
+      <p style="color: var(--cb-text-secondary); font-size: 0.95rem;">
+        Instant cryptographic QR passes for all municipal bus corridors.
+      </p>
+    </div>
+
+    <div class="card" style="padding: 2rem; box-shadow: var(--cb-shadow-lg);">
+      <form id="ticket-booking-form">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-location-dot" style="color: var(--cb-brand-primary);"></i> Origin Stop</label>
+            <input type="text" class="form-control" id="ticket-origin" value="Vijayawada PNBS" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-location-crosshairs" style="color: var(--cb-status-success);"></i> Destination Stop</label>
+            <input type="text" class="form-control" id="ticket-destination" value="Guntur NTR Bus Terminal" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+          <div class="form-group">
+            <label class="form-label">Passenger Count</label>
+            <input type="number" class="form-control" id="ticket-passengers" min="1" max="6" value="1">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Concession Category</label>
+            <select class="form-control" id="ticket-concession">
+              <option value="general">General Adult (Standard)</option>
+              <option value="student">Student Pass (50% Off)</option>
+              <option value="senior">Senior Citizen (30% Off)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Total Fare Summary Callout -->
+        <div style="background: var(--cb-bg-subtle); padding: 1.25rem; border-radius: var(--cb-radius-md); border: 1px solid var(--cb-border-subtle); display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <div>
+            <div style="font-size: 0.85rem; color: var(--cb-text-muted);">Total Payable Amount</div>
+            <div style="font-size: 0.75rem; color: var(--cb-text-muted);">Includes transit GST & dynamic corridor fare</div>
+          </div>
+          <div style="font-size: 2rem; font-weight: 800; color: var(--cb-status-success);" id="summary-total-fare">
+            ₹30
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-block">
+          <i class="fa-solid fa-lock"></i> Proceed to Secure Checkout
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/core/store.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/components/command_palette.js"></script>
+  <script src="js/passenger/ticketing.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+/* ==========================================================================
+   CityBus Enterprise Design System - Responsive Layouts & Breakpoints
+   File: css/responsive.css
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Breakpoints: Mobile (<= 768px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  /* Navigation */
+  .navbar .nav-links {
+    position: fixed;
+    top: var(--cb-navbar-height);
+    left: 0;
+    right: 0;
+    background-color: var(--cb-bg-surface);
+    border-bottom: 1px solid var(--cb-border-default);
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 0.75rem;
+    display: none;
+    box-shadow: var(--cb-shadow-xl);
+    z-index: var(--cb-z-dropdown);
+  }
+
+  .navbar .nav-links.open {
+    display: flex;
+  }
+
+  .mobile-menu-btn {
+    display: inline-flex !important;
+  }
+
+  /* Grid Layouts */
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4,
+  .grid-cards,
+  .footer-grid,
+  .telemetry-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    padding: 2.5rem 0 3.5rem;
+  }
+
+  .hero-title {
+    font-size: 1.85rem !important;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem !important;
+  }
+
+  .search-form {
+    flex-direction: column;
+  }
+
+  .search-form .btn {
+    width: 100%;
+  }
+
+  /* Map Dimensions on Mobile */
+  .map-canvas {
+    height: 350px !important;
+  }
+
+  .map-canvas-tall {
+    height: 400px !important;
+  }
+
+  /* Command Center 3-column layout on mobile converts to single column tabs */
+  .dispatcher-layout {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+  }
+
+  .dispatcher-sidebar-left,
+  .dispatcher-sidebar-right {
+    display: none;
+  }
+
+  .dispatcher-sidebar-left.active-mobile,
+  .dispatcher-sidebar-right.active-mobile {
+    display: block !important;
+  }
+
+  /* Modals on Mobile */
+  .modal-dialog {
+    max-width: 100% !important;
+    margin: 0.5rem;
+    border-radius: var(--cb-radius-lg);
+  }
+
+  /* Driver Cockpit Touch Targets */
+  .driver-cockpit-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .driver-btn-trip {
+    padding: 1.5rem 1rem !important;
+    font-size: 1.25rem !important;
+  }
+
+  /* Toasts */
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+  .toast-msg {
+    min-width: auto;
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Breakpoints: Tablet (769px - 1024px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .dispatcher-layout {
+    grid-template-columns: 280px 1fr !important;
+  }
+
+  .dispatcher-sidebar-right {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Breakpoints: Large Desktop & Ultrawide (>= 1400px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1360px;
+  }
+
+  .map-canvas-tall {
+    height: 720px;
+  }
+}

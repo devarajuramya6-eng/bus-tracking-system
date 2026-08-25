@@ -1,0 +1,322 @@
+/* ==========================================================================
+   CityBus Enterprise Design System - Map Components & Spatial Styling
+   File: css/map_components.css
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Map Container & Wrappers
+   -------------------------------------------------------------------------- */
+.map-wrapper {
+  position: relative;
+  background-color: var(--cb-bg-surface);
+  border: 1px solid var(--cb-border-default);
+  border-radius: var(--cb-radius-xl);
+  overflow: hidden;
+  box-shadow: var(--cb-shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.map-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--cb-space-3) var(--cb-space-5);
+  background-color: var(--cb-bg-surface);
+  border-bottom: 1px solid var(--cb-border-default);
+  z-index: 10;
+}
+
+.map-header-title {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-space-2);
+  font-weight: var(--cb-font-bold);
+  font-size: var(--cb-text-sm);
+  color: var(--cb-text-primary);
+}
+
+.map-canvas {
+  width: 100%;
+  height: 480px;
+  background-color: #E2E8F0;
+  z-index: 1;
+}
+
+.map-canvas-tall {
+  width: 100%;
+  height: 600px;
+  background-color: #E2E8F0;
+  z-index: 1;
+}
+
+.map-canvas-fullscreen {
+  width: 100%;
+  height: calc(100vh - var(--cb-navbar-height));
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   2. Custom Bus & Vehicle Markers
+   -------------------------------------------------------------------------- */
+.bus-marker-wrapper {
+  background: none;
+  border: none;
+}
+
+.custom-bus-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.custom-bus-marker:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+  z-index: 1000 !important;
+}
+
+.marker-pin {
+  width: 38px;
+  height: 38px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  border: 2px solid #FFFFFF;
+  transition: background-color var(--cb-transition-fast);
+}
+
+.marker-pin i {
+  transform: rotate(45deg);
+  font-size: 1rem;
+  color: #FFFFFF;
+}
+
+.marker-pin.on-route {
+  background: linear-gradient(135deg, #10B981, #059669);
+  box-shadow: 0 4px 12px var(--cb-status-success-glow);
+}
+
+.marker-pin.delayed {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  box-shadow: 0 4px 12px var(--cb-status-warning-glow);
+}
+
+.marker-pin.offline {
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+  box-shadow: 0 4px 12px var(--cb-status-danger-glow);
+}
+
+.marker-pin.emergency {
+  background: linear-gradient(135deg, #DC2626, #991B1B);
+  box-shadow: 0 0 0 8px rgba(220, 38, 38, 0.4);
+  animation: cbEmergencyPulse 1s infinite alternate;
+}
+
+@keyframes cbEmergencyPulse {
+  from { box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.5); }
+  to { box-shadow: 0 0 0 14px rgba(220, 38, 38, 0.1); }
+}
+
+.marker-label {
+  background-color: var(--cb-brand-secondary);
+  color: #FFFFFF;
+  font-size: 0.7rem;
+  font-weight: var(--cb-font-extrabold);
+  padding: 2px 6px;
+  border-radius: var(--cb-radius-sm);
+  margin-top: 3px;
+  white-space: nowrap;
+  box-shadow: var(--cb-shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Vehicle Heading Indicator */
+.vehicle-heading-arrow {
+  position: absolute;
+  top: -8px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 8px solid var(--cb-brand-primary);
+  transform-origin: center 24px;
+}
+
+/* --------------------------------------------------------------------------
+   3. Bus Stop & User Location Markers
+   -------------------------------------------------------------------------- */
+.stop-marker-wrapper {
+  background: none;
+  border: none;
+}
+
+.stop-marker-pin {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 3px solid var(--cb-brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cb-brand-primary);
+  font-size: 0.7rem;
+  box-shadow: var(--cb-shadow-md);
+  cursor: pointer;
+  transition: transform var(--cb-transition-fast);
+}
+
+.stop-marker-pin:hover {
+  transform: scale(1.3);
+  background-color: var(--cb-brand-primary);
+  color: #FFFFFF;
+}
+
+.user-gps-wrapper {
+  background: none;
+  border: none;
+}
+
+.user-gps-marker {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--cb-brand-primary);
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 0 0 6px var(--cb-brand-primary-glow), 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   4. Popups & Floating Map Cards
+   -------------------------------------------------------------------------- */
+.bus-popup-card {
+  padding: 0.25rem;
+  font-family: var(--cb-font-sans);
+  min-width: 230px;
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cb-space-2);
+  margin-bottom: 0.35rem;
+}
+
+.popup-bus-num {
+  font-weight: var(--cb-font-extrabold);
+  font-size: 1.1rem;
+  color: var(--cb-text-primary);
+}
+
+.popup-route {
+  font-size: var(--cb-text-xs);
+  font-weight: var(--cb-font-semibold);
+  color: var(--cb-text-muted);
+  margin-bottom: 0.65rem;
+}
+
+.popup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  background-color: var(--cb-bg-subtle);
+  padding: 0.5rem;
+  border-radius: var(--cb-radius-sm);
+  font-size: var(--cb-text-xs);
+  margin-bottom: 0.65rem;
+}
+
+.popup-label {
+  color: var(--cb-text-muted);
+  display: block;
+}
+
+.popup-val {
+  font-weight: var(--cb-font-bold);
+  color: var(--cb-text-primary);
+}
+
+/* Map Legend */
+.map-legend {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  background-color: var(--cb-bg-surface-glass-heavy);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--cb-border-default);
+  border-radius: var(--cb-radius-md);
+  padding: 0.6rem 0.85rem;
+  box-shadow: var(--cb-shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: var(--cb-font-semibold);
+  color: var(--cb-text-primary);
+  z-index: 400;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-dot.green { background-color: var(--cb-status-success); }
+.legend-dot.amber { background-color: var(--cb-status-warning); }
+.legend-dot.red { background-color: var(--cb-status-danger); }
+.legend-dot.blue { background-color: var(--cb-brand-primary); }
+
+/* Filter Floating Overlay */
+.map-filter-bar {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 400;
+  display: flex;
+  gap: 0.5rem;
+  background-color: var(--cb-bg-surface-glass-heavy);
+  backdrop-filter: blur(8px);
+  padding: 0.4rem;
+  border-radius: var(--cb-radius-md);
+  border: 1px solid var(--cb-border-default);
+  box-shadow: var(--cb-shadow-md);
+}
+
+.filter-chip {
+  padding: 0.35rem 0.75rem;
+  font-size: var(--cb-text-xs);
+  font-weight: var(--cb-font-semibold);
+  border-radius: var(--cb-radius-full);
+  background-color: transparent;
+  color: var(--cb-text-secondary);
+  cursor: pointer;
+  transition: var(--cb-transition-fast);
+  border: 1px solid transparent;
+}
+
+.filter-chip:hover {
+  background-color: var(--cb-bg-subtle);
+  color: var(--cb-text-primary);
+}
+
+.filter-chip.active {
+  background-color: var(--cb-brand-primary);
+  color: #FFFFFF;
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Depot Maintenance & Work Orders — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="background: var(--cb-bg-subtle);">
+
+  <header class="header">
+    <div class="nav-container">
+      <div class="logo">
+        <div class="logo-icon" style="background: var(--cb-category-airport);"><i class="fa-solid fa-wrench"></i></div>
+        <div class="logo-text">Depot<span>Maintenance</span></div>
+      </div>
+      <div class="nav-actions">
+        <a href="admin.html" class="btn btn-outline btn-xs"><i class="fa-solid fa-arrow-left"></i> Admin Portal</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 1.5rem auto; padding: 0 1.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <div>
+        <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--cb-text-primary);">
+          Workshop Work Orders & Preventive Maintenance
+        </h1>
+        <p style="color: var(--cb-text-secondary); font-size: 0.9rem;">
+          Track vehicle inspections, downtime intervals, and spare parts.
+        </p>
+      </div>
+
+      <button class="btn btn-primary" id="open-create-wo-btn">
+        <i class="fa-solid fa-plus"></i> New Work Order
+      </button>
+    </div>
+
+    <!-- Table Container -->
+    <div class="card" style="padding: 1.5rem;">
+      <div id="maintenance-table-container"></div>
+    </div>
+  </main>
+
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/components/datatable.js"></script>
+  <script src="js/admin/maintenance_manager.js"></script>
+</body>
+</html>

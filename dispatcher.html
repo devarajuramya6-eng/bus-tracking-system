@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tactical Dispatcher Command Center — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="height: 100vh; overflow: hidden; display: flex; flex-direction: column; background: #0B1120;">
+
+  <!-- Command Center Tactical Header -->
+  <header style="background: #0F172A; border-bottom: 1px solid #1E293B; padding: 0.6rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div class="logo">
+        <div class="logo-icon" style="background: var(--cb-category-airport);"><i class="fa-solid fa-tower-broadcast"></i></div>
+        <div class="logo-text" style="color: #FFF;">TACTICAL<span>RADAR</span></div>
+      </div>
+      <span class="badge badge-success"><span class="badge-dot"></span> 50 VEHICLES MONITORED</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <a href="incidents.html" class="btn btn-outline btn-xs" style="color: #FFF;"><i class="fa-solid fa-triangle-exclamation"></i> Incidents Kanban</a>
+      <a href="admin.html" class="btn btn-outline btn-xs" style="color: #FFF;"><i class="fa-solid fa-gear"></i> Admin Portal</a>
+      <a href="index.html" class="btn btn-outline btn-xs" style="color: #FFF;"><i class="fa-solid fa-power-off"></i> Exit</a>
+    </div>
+  </header>
+
+  <!-- 3-Column Tactical Workspace -->
+  <div style="flex: 1; display: grid; grid-template-columns: 320px 1fr 340px; height: calc(100vh - 54px); overflow: hidden;">
+    
+    <!-- Column 1: Fleet Vehicle List & Filters -->
+    <div style="background: #0F172A; border-right: 1px solid #1E293B; display: flex; flex-direction: column; overflow: hidden;">
+      <div style="padding: 0.75rem; border-bottom: 1px solid #1E293B;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <strong style="font-size: 0.85rem; color: #94A3B8;">ACTIVE MUNICIPAL FLEET</strong>
+          <span style="font-size: 0.75rem; color: var(--cb-brand-primary);" id="dispatcher-fleet-count">50 Vehicles</span>
+        </div>
+        <input type="text" class="form-control form-control-sm" id="dispatcher-search-input" placeholder="Search vehicle or driver..." style="background: #1E293B; border-color: #334155; color: #FFF;">
+        
+        <div style="display: flex; gap: 0.3rem; margin-top: 0.5rem; overflow-x: auto;">
+          <button class="dispatcher-filter-chip filter-chip active" data-filter="All" style="font-size: 0.7rem; padding: 2px 8px;">All</button>
+          <button class="dispatcher-filter-chip filter-chip" data-filter="Moving" style="font-size: 0.7rem; padding: 2px 8px;">Moving</button>
+          <button class="dispatcher-filter-chip filter-chip" data-filter="Delayed" style="font-size: 0.7rem; padding: 2px 8px;">Delayed</button>
+          <button class="dispatcher-filter-chip filter-chip" data-filter="Offline" style="font-size: 0.7rem; padding: 2px 8px;">Offline</button>
+        </div>
+      </div>
+
+      <!-- Fleet List Scroll Container -->
+      <div id="dispatcher-fleet-list" style="flex: 1; overflow-y: auto; padding: 0.75rem;">
+        <!-- Injected by js/dispatcher/command_center.js -->
+      </div>
+    </div>
+
+    <!-- Column 2: Center Live Radar Leaflet Map -->
+    <div style="position: relative; width: 100%; height: 100%;">
+      <div id="dispatcher-radar-map" style="width: 100%; height: 100%;"></div>
+    </div>
+
+    <!-- Column 3: Selected Bus Telemetry & Action Controls -->
+    <div style="background: #0F172A; border-left: 1px solid #1E293B; padding: 1rem; overflow-y: auto;" id="dispatcher-bus-control">
+      <div style="text-align: center; padding: 3rem 1rem; color: #64748B;">
+        <i class="fa-solid fa-hand-pointer" style="font-size: 2rem; margin-bottom: 0.75rem;"></i>
+        <div>Select any vehicle from the fleet radar to inspect telemetry and dispatch directives.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/core/ws.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/map/map_engine.js"></script>
+  <script src="js/map/interpolator.js"></script>
+  <script src="js/map/bus_layer.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/dispatcher/command_center.js"></script>
+</body>
+</html>

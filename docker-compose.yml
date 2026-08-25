@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # CityBus Web & API Engine
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: citybus_api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://citybus_user:citybus_secure_pass_2026@postgres:5432/citybus_db
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - SECRET_KEY=citybus-enterprise-secret-key-2026-secure
+      - JWT_SECRET_KEY=citybus-jwt-token-secret-2026
+      - RAZORPAY_KEY_ID=rzp_test_citybus_sandbox_key
+      - RAZORPAY_KEY_SECRET=rzp_secret_citybus_test_2026
+      - CORS_ORIGINS=*
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - citybus_net
+
+  # PostgreSQL Database with PostGIS Extensions
+  postgres:
+    image: postgis/postgis:15-3.3-alpine
+    container_name: citybus_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: citybus_db
+      POSTGRES_USER: citybus_user
+      POSTGRES_PASSWORD: citybus_secure_pass_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U citybus_user -d citybus_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - citybus_net
+
+  # Redis Cache & Real-Time Message Broker
+  redis:
+    image: redis:7-alpine
+    container_name: citybus_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - citybus_net
+
+  # Nginx Reverse Proxy & Static Asset Server
+  nginx:
+    image: nginx:alpine
+    container_name: citybus_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./:/usr/share/nginx/html:ro
+    depends_on:
+      - web
+    networks:
+      - citybus_net
+
+volumes:
+  pgdata:
+  redisdata:
+
+networks:
+  citybus_net:
+    driver: bridge

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline — CityBus Transit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--cb-bg-subtle); padding: 1.5rem; text-align: center;">
+
+  <div class="card" style="max-width: 460px; padding: 2.5rem 2rem; box-shadow: var(--cb-shadow-xl);">
+    <div style="font-size: 3.5rem; color: var(--cb-status-warning); margin-bottom: 1rem;">
+      <i class="fa-solid fa-wifi"></i>
+    </div>
+    <h1 style="font-size: 1.6rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 0.5rem;">
+      You're Currently Offline
+    </h1>
+    <p style="font-size: 0.9rem; color: var(--cb-text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">
+      CityBus is designed with offline-first caching. You can still view your saved offline tickets and static route schedules.
+    </p>
+
+    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+      <a href="my-tickets.html" class="btn btn-primary btn-block">
+        <i class="fa-solid fa-wallet"></i> View Saved Passes (Offline)
+      </a>
+      <button class="btn btn-outline btn-block" onclick="window.location.reload();">
+        <i class="fa-solid fa-rotate-right"></i> Check Connection & Retry
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>

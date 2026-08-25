@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conductor Mobile Terminal — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="background: var(--cb-bg-subtle);">
+
+  <header class="header">
+    <div class="nav-container">
+      <div class="logo">
+        <div class="logo-icon" style="background: var(--cb-status-success);"><i class="fa-solid fa-qrcode"></i></div>
+        <div class="logo-text">Conductor<span>POS</span></div>
+      </div>
+      <div class="nav-actions">
+        <span class="badge badge-success">Terminal Online</span>
+        <a href="index.html" class="btn btn-outline btn-xs"><i class="fa-solid fa-power-off"></i> Exit</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 500px; margin: 1.5rem auto; padding: 0 1rem;">
+    <!-- Headcount & Fare Stats -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+      <div class="card" style="padding: 1rem; text-align: center;">
+        <div style="font-size: 0.75rem; color: var(--cb-text-muted);">Current Headcount</div>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--cb-brand-primary);" id="conductor-passenger-count">32</div>
+        <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem;">
+          <button class="btn btn-outline btn-xs" id="dec-passengers-btn">-1 Exit</button>
+          <button class="btn btn-primary btn-xs" id="inc-passengers-btn">+1 Board</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 1rem; text-align: center;">
+        <div style="font-size: 0.75rem; color: var(--cb-text-muted);">Passes Validated</div>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--cb-status-success);" id="conductor-validated-count">48</div>
+        <div style="font-size: 0.75rem; color: var(--cb-text-muted); margin-top: 0.5rem;">Trip Total</div>
+      </div>
+    </div>
+
+    <!-- Camera QR Scan Trigger Card -->
+    <div class="card" style="padding: 1.5rem; text-align: center; margin-bottom: 1.5rem;">
+      <div style="font-size: 3rem; color: var(--cb-brand-primary); margin-bottom: 1rem;">
+        <i class="fa-solid fa-qrcode"></i>
+      </div>
+      <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 0.35rem;">
+        Validate Passenger Ticket
+      </h3>
+      <p style="font-size: 0.85rem; color: var(--cb-text-secondary); margin-bottom: 1.25rem;">
+        Point device camera at passenger QR pass to verify validity and token cryptographic signature.
+      </p>
+
+      <button class="btn btn-primary btn-lg btn-block" id="start-scanner-btn" style="height: 56px; font-weight: 700;">
+        <i class="fa-solid fa-camera"></i> Start Camera QR Scan
+      </button>
+    </div>
+
+    <!-- Scan Result Card (Initially Hidden) -->
+    <div id="scan-result-card" style="display: none; margin-bottom: 1.5rem;">
+      <!-- Injected by js/conductor/conductor_app.js -->
+    </div>
+
+    <!-- Manual Code Fallback -->
+    <div class="card" style="padding: 1.25rem;">
+      <div style="font-size: 0.85rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.5rem;">
+        Manual Ticket Code Entry
+      </div>
+      <form id="manual-ticket-form" style="display: flex; gap: 0.5rem;">
+        <input type="text" class="form-control" id="manual-ticket-id" placeholder="e.g. TCK-2608-0042" required>
+        <button type="submit" class="btn btn-outline"><i class="fa-solid fa-check"></i> Verify</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="js/core/api.js"></script>
+  <script src="js/core/notifications.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/conductor/conductor_app.js"></script>
+</body>
+</html>

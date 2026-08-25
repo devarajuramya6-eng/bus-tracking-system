@@ -1,0 +1,84 @@
+/* ==========================================================================
+   CityBus Enterprise Design System - Animations & Micro-Interactions
+   File: css/animations.css
+   ========================================================================== */
+
+@keyframes cbFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cbFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cbFadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cbScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes cbSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes cbRadarSweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes cbBounceSlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.anim-fade-in { animation: cbFadeIn 0.3s var(--cb-ease-decelerate); }
+.anim-fade-up { animation: cbFadeInUp 0.35s var(--cb-ease-decelerate); }
+.anim-scale-in { animation: cbScaleIn 0.25s var(--cb-ease-spring); }
+.anim-spin { animation: cbSpin 1s linear infinite; }
+.anim-bounce { animation: cbBounceSlow 2s ease-in-out infinite; }
+
+/* Radar scanner sweep effect for Dispatcher Command Center */
+.radar-sweep-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: conic-gradient(from 0deg, rgba(37, 99, 235, 0) 0deg, rgba(37, 99, 235, 0.12) 60deg, rgba(37, 99, 235, 0) 65deg);
+  animation: cbRadarSweep 6s linear infinite;
+  border-radius: 50%;
+  opacity: 0.7;
+}
+
+/* Card hover lift effect */
+.hover-lift {
+  transition: transform var(--cb-transition-fast), box-shadow var(--cb-transition-fast);
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--cb-shadow-lg);
+}

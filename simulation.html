@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulator Control Room — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="background: var(--cb-bg-subtle);">
+
+  <header class="header">
+    <div class="nav-container">
+      <div class="logo">
+        <div class="logo-icon" style="background: var(--cb-brand-primary);"><i class="fa-solid fa-sliders"></i></div>
+        <div class="logo-text">Simulator<span>Room</span></div>
+      </div>
+      <div class="nav-actions">
+        <a href="admin.html" class="btn btn-outline btn-xs"><i class="fa-solid fa-arrow-left"></i> Admin Portal</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 800px; margin: 2rem auto; padding: 0 1.5rem;">
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 0.25rem;">
+        Multi-Bus GPS Kinematics Simulator
+      </h1>
+      <p style="color: var(--cb-text-secondary); font-size: 0.95rem;">
+        Control simulation rate, step individual kinematic ticks, and inject traffic delays or emergency panic conditions.
+      </p>
+    </div>
+
+    <div class="card" style="padding: 2rem; margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <span style="font-weight: 700; color: var(--cb-text-primary);">Simulation Engine Status:</span>
+        <span class="badge badge-success" id="sim-status-badge">RUNNING</span>
+      </div>
+
+      <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+        <button class="btn btn-warning btn-block" id="sim-toggle-btn">
+          <i class="fa-solid fa-pause"></i> Pause Simulator
+        </button>
+        <button class="btn btn-primary btn-block" id="sim-step-manual-btn">
+          <i class="fa-solid fa-forward-step"></i> Step Single Tick
+        </button>
+      </div>
+
+      <div style="border-top: 1px solid var(--cb-border-subtle); padding-top: 1.5rem;">
+        <h4 style="font-size: 1rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 1rem;">
+          Chaos & Fault Injection
+        </h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <button class="btn btn-outline" id="sim-inject-delay-btn">
+            <i class="fa-solid fa-traffic-light"></i> Inject Traffic Delay
+          </button>
+          <button class="btn btn-danger" id="sim-inject-sos-btn">
+            <i class="fa-solid fa-triangle-exclamation"></i> Inject Priority-1 SOS
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/admin/simulation_panel.js"></script>
+</body>
+</html>

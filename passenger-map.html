@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Fleet Radar Map — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="height: 100vh; overflow: hidden; display: flex; flex-direction: column;">
+  
+  <!-- Header -->
+  <header class="header" style="flex-shrink: 0;">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-bus"></i></div>
+        <div class="logo-text">City<span>Bus</span><small class="live-tag">RADAR</small></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="passenger-map.html" class="active"><i class="fa-solid fa-map-location-dot"></i> Live Map</a></li>
+        <li><a href="journey-planner.html"><i class="fa-solid fa-route"></i> Plan Trip</a></li>
+        <li><a href="buses.html"><i class="fa-solid fa-bus-simple"></i> Buses</a></li>
+        <li><a href="routes.html"><i class="fa-solid fa-signs-post"></i> Routes</a></li>
+        <li><a href="tickets.html"><i class="fa-solid fa-ticket"></i> Book Pass</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="icon-btn" id="cmd-palette-btn" title="Command Palette"><i class="fa-solid fa-terminal"></i></button>
+        <button class="theme-toggle" id="theme-toggle-btn"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Fullscreen Map Layout Container -->
+  <div style="flex: 1; position: relative; width: 100%; height: calc(100vh - 64px);">
+    <!-- Leaflet Map Element -->
+    <div id="passenger-live-map" style="width: 100%; height: 100%;"></div>
+
+    <!-- Floating Top Search & Filter Floating Card -->
+    <div class="map-floating-overlay" style="position: absolute; top: 1rem; left: 1rem; z-index: 1000; width: 340px;">
+      <div class="card" style="padding: 1rem; box-shadow: var(--cb-shadow-lg); backdrop-filter: blur(8px); background: rgba(var(--cb-bg-surface), 0.9);">
+        <div style="position: relative; margin-bottom: 0.75rem;">
+          <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--cb-text-muted);"></i>
+          <input type="text" id="map-bus-search" class="form-control form-control-sm" placeholder="Search buses, routes..." style="padding-left: 2.2rem;">
+        </div>
+
+        <div style="display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.25rem;">
+          <button class="filter-chip active" data-filter="All">All</button>
+          <button class="filter-chip" data-filter="On Route">Moving</button>
+          <button class="filter-chip" data-filter="Delayed">Delayed</button>
+          <button class="filter-chip" data-filter="Favorites">★ Favs</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Geolocation & Layer Controls -->
+    <div style="position: absolute; bottom: 2rem; right: 1rem; z-index: 1000; display: flex; flex-direction: column; gap: 0.5rem;">
+      <button class="btn btn-primary" id="map-locate-user-btn" style="border-radius: 50%; width: 44px; height: 44px; padding: 0; display: flex; align-items: center; justify-content: center; box-shadow: var(--cb-shadow-lg);" title="Find My Location">
+        <i class="fa-solid fa-crosshairs" style="font-size: 1.1rem;"></i>
+      </button>
+      <button class="btn btn-outline" id="map-toggle-stops-btn" style="border-radius: 50%; width: 44px; height: 44px; padding: 0; display: flex; align-items: center; justify-content: center; background: var(--cb-bg-surface); box-shadow: var(--cb-shadow-lg);" title="Toggle Bus Stops">
+        <i class="fa-solid fa-location-dot"></i>
+      </button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/core/ws.js"></script>
+  <script src="js/core/auth.js"></script>
+  <script src="js/core/store.js"></script>
+  <script src="js/core/notifications.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/components/command_palette.js"></script>
+  <script src="js/map/map_engine.js"></script>
+  <script src="js/map/interpolator.js"></script>
+  <script src="js/map/bus_layer.js"></script>
+  <script src="js/map/stop_layer.js"></script>
+  <script src="js/simulator.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const map = window.CityBusMap.createMap('passenger-live-map', { center: [16.5062, 80.6480], zoom: 13 });
+      const busLayer = new BusLayerManager(map);
+      let stopsLayer = null;
+
+      let buses = (window.CITYBUS_DATA && window.CITYBUS_DATA.buses) ? window.CITYBUS_DATA.buses : [];
+      busLayer.updateBuses(buses);
+
+      document.getElementById('map-locate-user-btn').onclick = () => {
+        window.CityBusMap.locateUser(map);
+      };
+
+      document.getElementById('map-toggle-stops-btn').onclick = () => {
+        if (!stopsLayer) {
+          stopsLayer = new StopLayerManager(map);
+          stopsLayer.renderStops(window.CITYBUS_DATA.stops || []);
+          if (window.showToast) window.showToast('Transit stops layer enabled', 'info');
+        } else {
+          stopsLayer.clear();
+          stopsLayer = null;
+          if (window.showToast) window.showToast('Transit stops layer hidden', 'info');
+        }
+      };
+
+      window.addEventListener('citybus:data-updated', (e) => {
+        if (e.detail.buses) busLayer.updateBuses(e.detail.buses);
+      });
+    });
+  </script>
+</body>
+</html>

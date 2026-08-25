@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driver Cockpit & Telemetry Terminal — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* High-contrast touch-friendly cockpit styles */
+    .driver-btn-trip {
+      height: 72px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      border-radius: var(--cb-radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      width: 100%;
+      cursor: pointer;
+      border: none;
+      box-shadow: var(--cb-shadow-lg);
+      transition: all 0.2s ease;
+    }
+    .driver-btn-trip.btn-start { background: var(--cb-status-success); color: #FFF; }
+    .driver-btn-trip.btn-stop { background: var(--cb-status-danger); color: #FFF; }
+    .driver-hud-stat {
+      background: var(--cb-bg-subtle);
+      border: 1px solid var(--cb-border-strong);
+      padding: 1.25rem;
+      border-radius: var(--cb-radius-md);
+      text-align: center;
+    }
+  </style>
+</head>
+<body style="background: #090D16; color: #F8FAFC;">
+
+  <!-- Cockpit Header -->
+  <header style="background: #0F172A; border-bottom: 2px solid #1E293B; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <div class="logo-icon" style="background: var(--cb-status-danger);"><i class="fa-solid fa-id-card-clip"></i></div>
+      <div>
+        <div style="font-weight: 800; font-size: 1.1rem; color: #FFF;">DRIVER COCKPIT HUD</div>
+        <div style="font-size: 0.75rem; color: #94A3B8;">Captain Ravi Kumar • Bus AP16-001 (Route 27A)</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <span class="badge badge-danger" id="driver-status-badge"><span class="badge-dot"></span> OFFLINE (PARKED)</span>
+      <span class="badge badge-dark" id="gps-status-badge"><span class="badge-dot"></span> GPS: STANDBY</span>
+      <a href="index.html" class="btn btn-outline btn-xs" style="color: #FFF;"><i class="fa-solid fa-power-off"></i> Exit</a>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 1.5rem auto; padding: 0 1.5rem;">
+    <!-- Main Big Trip Action Button -->
+    <div style="margin-bottom: 1.5rem;">
+      <button class="driver-btn-trip btn-start" id="driver-trip-btn">
+        <i class="fa-solid fa-play"></i> START NEW TRIP (BROADCAST GPS)
+      </button>
+    </div>
+
+    <!-- 4 High-Contrast Cockpit Gauges -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+      <div class="driver-hud-stat">
+        <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase;">Vehicle Speed</div>
+        <div style="font-size: 2.4rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #38BDF8;" id="driver-speed">0 km/h</div>
+      </div>
+
+      <div class="driver-hud-stat">
+        <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase;">GPS Latitude</div>
+        <div style="font-size: 1.3rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: #FFF;" id="coords-lat">16.50620</div>
+      </div>
+
+      <div class="driver-hud-stat">
+        <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase;">GPS Longitude</div>
+        <div style="font-size: 1.3rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: #FFF;" id="coords-lng">80.64800</div>
+      </div>
+
+      <div class="driver-hud-stat">
+        <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase;">On-Board Pax</div>
+        <div style="font-size: 2.4rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #4ADE80;" id="driver-passengers">28</div>
+      </div>
+    </div>
+
+    <!-- Map & Stop Action Controls -->
+    <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem;">
+      <!-- Leaflet Map HUD -->
+      <div class="card" style="padding: 0.5rem; background: #0F172A; border-color: #1E293B; height: 380px;">
+        <div id="driver-mini-map" style="width: 100%; height: 100%; border-radius: var(--cb-radius-md);"></div>
+      </div>
+
+      <!-- Quick Action Commands -->
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <button class="btn btn-primary btn-lg" id="arrived-stop-btn" style="height: 60px; font-weight: 700;">
+          <i class="fa-solid fa-location-dot"></i> Arrived at Bus Stop
+        </button>
+
+        <button class="btn btn-warning btn-lg" id="driver-incident-btn" style="height: 60px; font-weight: 700; color: #000;">
+          <i class="fa-solid fa-triangle-exclamation"></i> Report Delay / Incident
+        </button>
+
+        <button class="btn btn-danger btn-lg" id="driver-sos-btn" style="height: 70px; font-weight: 800; font-size: 1.2rem; background: #EF4444; border: none; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);">
+          <i class="fa-solid fa-bell anim-bounce"></i> EMERGENCY SOS PANIC
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/core/ws.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/map/map_engine.js"></script>
+  <script src="js/driver/cockpit.js"></script>
+</body>
+</html>

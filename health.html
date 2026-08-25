@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System & Node Health Diagnostics — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="background: var(--cb-bg-subtle);">
+
+  <header class="header">
+    <div class="nav-container">
+      <div class="logo">
+        <div class="logo-icon" style="background: var(--cb-status-success);"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="logo-text">System<span>Health</span></div>
+      </div>
+      <div class="nav-actions">
+        <a href="admin.html" class="btn btn-outline btn-xs"><i class="fa-solid fa-arrow-left"></i> Admin Portal</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 900px; margin: 2rem auto; padding: 0 1.5rem;">
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 0.25rem;">
+        Node & Cluster Health Probes
+      </h1>
+      <p style="color: var(--cb-text-secondary); font-size: 0.95rem;">
+        Real-time telemetry pipeline diagnostics, database connection pool status, and WebSocket cluster heartbeat.
+      </p>
+    </div>
+
+    <!-- Health Grid -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 2rem;">
+      
+      <div class="card" style="padding: 1.5rem; text-align: center;">
+        <i class="fa-solid fa-database" style="font-size: 2rem; color: var(--cb-status-success); margin-bottom: 0.75rem;"></i>
+        <h4 style="font-size: 1rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.25rem;">PostgreSQL / SQLite</h4>
+        <span class="badge badge-success">CONNECTED</span>
+        <div style="font-size: 0.75rem; color: var(--cb-text-muted); margin-top: 0.5rem;">Pool: 10/10 active • 2ms ping</div>
+      </div>
+
+      <div class="card" style="padding: 1.5rem; text-align: center;">
+        <i class="fa-solid fa-network-wired" style="font-size: 2rem; color: var(--cb-brand-primary); margin-bottom: 0.75rem;"></i>
+        <h4 style="font-size: 1rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.25rem;">Socket.IO Telemetry</h4>
+        <span class="badge badge-success">STREAMING</span>
+        <div style="font-size: 0.75rem; color: var(--cb-text-muted); margin-top: 0.5rem;">50 buses connected • &lt;50ms latency</div>
+      </div>
+
+      <div class="card" style="padding: 1.5rem; text-align: center;">
+        <i class="fa-solid fa-server" style="font-size: 2rem; color: var(--cb-status-warning); margin-bottom: 0.75rem;"></i>
+        <h4 style="font-size: 1rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.25rem;">Flask API Engine</h4>
+        <span class="badge badge-success">HEALTHY</span>
+        <div style="font-size: 0.75rem; color: var(--cb-text-muted); margin-top: 0.5rem;">HTTP 200 OK • Uptime: 99.98%</div>
+      </div>
+
+    </div>
+
+    <!-- Diagnostic Details Box -->
+    <div class="card" style="padding: 1.5rem;">
+      <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 1rem;">
+        Diagnostics Raw Output (/health/ready)
+      </h3>
+      <pre style="background: var(--cb-bg-subtle); padding: 1rem; border-radius: var(--cb-radius-md); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--cb-text-primary); overflow-x: auto;">
+{
+  "status": "ready",
+  "service": "CityBus Enterprise Transit Engine",
+  "database": "connected",
+  "active_fleet_count": 50,
+  "corridors_active": 20,
+  "timestamp": "2026-08-25T05:50:00Z"
+}
+      </pre>
+    </div>
+  </main>
+
+  <script src="js/core/theme.js"></script>
+</body>
+</html>

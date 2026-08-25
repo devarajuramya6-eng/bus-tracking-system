@@ -1,0 +1,22 @@
+{
+  "name": "CityBus Intelligent Transit Platform",
+  "short_name": "CityBus",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0B1120",
+  "theme_color": "#2563EB",
+  "orientation": "portrait-primary",
+  "description": "Real-time public transit tracking, live GPS radar, journey planning, and contactless QR ticketing.",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Digital Pass Wallet — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-bus"></i></div>
+        <div class="logo-text">City<span>Bus</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="passenger-map.html"><i class="fa-solid fa-map-location-dot"></i> Live Map</a></li>
+        <li><a href="tickets.html"><i class="fa-solid fa-ticket"></i> Book Pass</a></li>
+        <li><a href="my-tickets.html" class="active"><i class="fa-solid fa-wallet"></i> My Wallet</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle-btn"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 540px; margin: 2rem auto; padding: 0 1.5rem;">
+    <!-- Digital Pass Card -->
+    <div class="card" style="padding: 1.75rem; border-top: 6px solid var(--cb-brand-primary); box-shadow: var(--cb-shadow-xl); position: relative; overflow: hidden;">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+          <span style="font-size: 0.75rem; color: var(--cb-text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">CityBus Municipal Transit Pass</span>
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--cb-text-primary);" id="ticket-number-display">TCK-2608-0042</h2>
+        </div>
+        <span class="badge badge-success" id="ticket-status-badge">
+          <span class="badge-dot"></span> VALID PASS
+        </span>
+      </div>
+
+      <!-- Route Info -->
+      <div style="background: var(--cb-bg-subtle); padding: 1rem; border-radius: var(--cb-radius-md); margin-bottom: 1.25rem;">
+        <div style="font-size: 0.75rem; color: var(--cb-text-muted);">Route Corridor</div>
+        <div style="font-size: 1rem; font-weight: 700; color: var(--cb-text-primary);" id="ticket-route-display">
+          Vijayawada PNBS → Guntur NTR Terminal
+        </div>
+      </div>
+
+      <!-- QR Code Display -->
+      <div style="text-align: center; margin: 1.5rem 0;" id="ticket-qr-code">
+        <!-- Injected by js/passenger/digital_ticket.js -->
+      </div>
+
+      <!-- Metadata Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; border-top: 1px dashed var(--cb-border-strong); padding-top: 1.25rem; font-size: 0.85rem;">
+        <div><span style="color: var(--cb-text-muted);">Fare Paid:</span> <strong id="ticket-fare-display">₹45.00</strong></div>
+        <div><span style="color: var(--cb-text-muted);">Expires:</span> <strong id="ticket-expiry-display">Today, 04:15 PM</strong></div>
+      </div>
+
+      <!-- Bottom Actions -->
+      <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+        <button class="btn btn-outline btn-sm btn-block" id="ticket-refund-btn">
+          <i class="fa-solid fa-rotate-left"></i> Request Refund
+        </button>
+        <a href="index.html" class="btn btn-primary btn-sm btn-block">
+          <i class="fa-solid fa-house"></i> Done
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/passenger/digital_ticket.js"></script>
+</body>
+</html>

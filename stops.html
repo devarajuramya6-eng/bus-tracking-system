@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City Bus Stops & Shelters — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-bus"></i></div>
+        <div class="logo-text">City<span>Bus</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="passenger-map.html"><i class="fa-solid fa-map-location-dot"></i> Live Map</a></li>
+        <li><a href="journey-planner.html"><i class="fa-solid fa-route"></i> Plan Trip</a></li>
+        <li><a href="buses.html"><i class="fa-solid fa-bus-simple"></i> Buses</a></li>
+        <li><a href="routes.html"><i class="fa-solid fa-signs-post"></i> Routes</a></li>
+        <li><a href="stops.html" class="active"><i class="fa-solid fa-location-dot"></i> Stops</a></li>
+        <li><a href="tickets.html"><i class="fa-solid fa-ticket"></i> Book Pass</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="icon-btn" id="cmd-palette-btn"><i class="fa-solid fa-terminal"></i></button>
+        <button class="theme-toggle" id="theme-toggle-btn"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 2rem auto; padding: 0 1.5rem;">
+    <div style="margin-bottom: 1.5rem;">
+      <h1 style="font-size: 2rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 0.25rem;">
+        City Transit Stops & Shelters
+      </h1>
+      <p style="color: var(--cb-text-secondary); font-size: 0.95rem;">
+        300+ geo-tagged bus stops with accessibility amenities and live departures.
+      </p>
+    </div>
+
+    <!-- Map Split -->
+    <div class="card" style="padding: 0.5rem; height: 320px; margin-bottom: 2rem;">
+      <div id="stops-catalog-map" style="width: 100%; height: 100%; border-radius: var(--cb-radius-md);"></div>
+    </div>
+
+    <!-- Stops Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;" id="stops-catalog-grid">
+      <!-- Injected by js/passenger/stops_catalog.js -->
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/components/command_palette.js"></script>
+  <script src="js/map/map_engine.js"></script>
+  <script src="js/map/stop_layer.js"></script>
+  <script src="js/passenger/stops_catalog.js"></script>
+</body>
+</html>

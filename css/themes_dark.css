@@ -1,0 +1,344 @@
+/* ==========================================================================
+   CityBus Enterprise Design System - Comprehensive Dark Theme Engine
+   File: css/themes_dark.css
+   ========================================================================== */
+
+[data-theme="dark"],
+body.dark-theme {
+  /* ------------------------------------------------------------------------
+     1. Dark Theme Core Tokens
+     ------------------------------------------------------------------------ */
+  --cb-brand-primary: #3B82F6;
+  --cb-brand-primary-hover: #60A5FA;
+  --cb-brand-primary-active: #2563EB;
+  --cb-brand-primary-light: rgba(59, 130, 246, 0.15);
+  --cb-brand-primary-subtle: rgba(59, 130, 246, 0.12);
+  --cb-brand-primary-glow: rgba(59, 130, 246, 0.35);
+
+  --cb-brand-secondary: #0B1120;
+  --cb-brand-secondary-hover: #0F172A;
+  --cb-brand-accent: #22D3EE;
+  --cb-brand-accent-hover: #67E8F9;
+  --cb-brand-accent-light: rgba(34, 211, 238, 0.15);
+
+  /* Status Colors in Dark Mode (High Contrast & Vibrant) */
+  --cb-status-success: #34D399;
+  --cb-status-success-hover: #10B981;
+  --cb-status-success-light: rgba(52, 211, 153, 0.15);
+  --cb-status-success-subtle: rgba(52, 211, 153, 0.1);
+  --cb-status-success-glow: rgba(52, 211, 153, 0.4);
+
+  --cb-status-warning: #FBBF24;
+  --cb-status-warning-hover: #F59E0B;
+  --cb-status-warning-light: rgba(251, 191, 36, 0.15);
+  --cb-status-warning-subtle: rgba(251, 191, 36, 0.1);
+  --cb-status-warning-glow: rgba(251, 191, 36, 0.4);
+
+  --cb-status-danger: #F87171;
+  --cb-status-danger-hover: #EF4444;
+  --cb-status-danger-light: rgba(248, 113, 113, 0.15);
+  --cb-status-danger-subtle: rgba(248, 113, 113, 0.1);
+  --cb-status-danger-glow: rgba(248, 113, 113, 0.4);
+
+  --cb-status-info: #38BDF8;
+  --cb-status-info-hover: #0EA5E9;
+  --cb-status-info-light: rgba(56, 189, 248, 0.15);
+  --cb-status-info-subtle: rgba(56, 189, 248, 0.1);
+  --cb-status-info-glow: rgba(56, 189, 248, 0.4);
+
+  /* Surfaces & Backgrounds */
+  --cb-bg-base: #0B0F19;
+  --cb-bg-subtle: #111827;
+  --cb-bg-surface: #1E293B;
+  --cb-bg-surface-elevated: #243147;
+  --cb-bg-surface-glass: rgba(30, 41, 59, 0.85);
+  --cb-bg-surface-glass-heavy: rgba(30, 41, 59, 0.96);
+  --cb-bg-overlay: rgba(3, 7, 18, 0.82);
+  --cb-bg-scrim: rgba(3, 7, 18, 0.65);
+
+  /* Typography */
+  --cb-text-primary: #F8FAFC;
+  --cb-text-secondary: #E2E8F0;
+  --cb-text-muted: #94A3B8;
+  --cb-text-subtle: #64748B;
+  --cb-text-disabled: #475569;
+  --cb-text-inverse: #0F172A;
+  --cb-text-on-primary: #FFFFFF;
+
+  /* Borders & Dividers */
+  --cb-border-subtle: #1F2937;
+  --cb-border-default: #334155;
+  --cb-border-strong: #475569;
+  --cb-border-focus: #3B82F6;
+
+  /* Shadows (Dark Elevation with Ambient Glow) */
+  --cb-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --cb-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --cb-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --cb-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --cb-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  --cb-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+
+  /* Backward Compatibility Variables */
+  --primary: var(--cb-brand-primary);
+  --primary-hover: var(--cb-brand-primary-hover);
+  --primary-light: var(--cb-brand-primary-light);
+  --primary-glow: var(--cb-brand-primary-glow);
+  --dark: #F8FAFC;
+  --dark-surface: #1E293B;
+  --bg: var(--cb-bg-base);
+  --card-bg: var(--cb-bg-surface);
+  --surface: var(--cb-bg-surface);
+  --success: var(--cb-status-success);
+  --success-light: var(--cb-status-success-light);
+  --warning: var(--cb-status-warning);
+  --warning-light: var(--cb-status-warning-light);
+  --danger: var(--cb-status-danger);
+  --danger-light: var(--cb-status-danger-light);
+  --info: var(--cb-status-info);
+  --info-light: var(--cb-status-info-light);
+  --text-main: var(--cb-text-primary);
+  --text-body: var(--cb-text-secondary);
+  --text-muted: var(--cb-text-muted);
+  --text-light: var(--cb-text-subtle);
+  --border-color: var(--cb-border-default);
+  --border-light: var(--cb-border-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   2. Dark Mode Component Specific Overrides
+   -------------------------------------------------------------------------- */
+
+[data-theme="dark"] body,
+body.dark-theme {
+  background-color: var(--cb-bg-base);
+  color: var(--cb-text-secondary);
+}
+
+/* Navbar */
+[data-theme="dark"] .navbar,
+body.dark-theme .navbar {
+  background-color: var(--cb-bg-surface-glass-heavy);
+  border-bottom: 1px solid var(--cb-border-default);
+}
+
+[data-theme="dark"] .nav-link,
+body.dark-theme .nav-link {
+  color: var(--cb-text-muted);
+}
+
+[data-theme="dark"] .nav-link:hover,
+[data-theme="dark"] .nav-link.active,
+body.dark-theme .nav-link:hover,
+body.dark-theme .nav-link.active {
+  color: var(--cb-brand-primary);
+  background-color: var(--cb-brand-primary-light);
+}
+
+/* Cards & Surfaces */
+[data-theme="dark"] .card,
+[data-theme="dark"] .bus-card,
+[data-theme="dark"] .route-card,
+[data-theme="dark"] .stop-card,
+[data-theme="dark"] .telemetry-box,
+[data-theme="dark"] .timeline-card,
+[data-theme="dark"] .details-header-card,
+[data-theme="dark"] .admin-card,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .hero-search-card,
+body.dark-theme .card,
+body.dark-theme .bus-card,
+body.dark-theme .route-card,
+body.dark-theme .stop-card,
+body.dark-theme .telemetry-box,
+body.dark-theme .timeline-card,
+body.dark-theme .details-header-card,
+body.dark-theme .admin-card,
+body.dark-theme .stat-card,
+body.dark-theme .hero-search-card {
+  background-color: var(--cb-bg-surface);
+  border-color: var(--cb-border-default);
+  box-shadow: var(--cb-shadow-sm);
+}
+
+/* Data Tables */
+[data-theme="dark"] .data-table,
+[data-theme="dark"] table,
+body.dark-theme .data-table,
+body.dark-theme table {
+  background-color: var(--cb-bg-surface);
+  color: var(--cb-text-secondary);
+  border-color: var(--cb-border-default);
+}
+
+[data-theme="dark"] th,
+body.dark-theme th {
+  background-color: var(--cb-bg-subtle);
+  color: var(--cb-text-primary);
+  border-bottom: 1px solid var(--cb-border-strong);
+}
+
+[data-theme="dark"] td,
+body.dark-theme td {
+  border-bottom: 1px solid var(--cb-border-default);
+}
+
+[data-theme="dark"] tr:hover td,
+body.dark-theme tr:hover td {
+  background-color: var(--cb-bg-surface-elevated);
+}
+
+/* Inputs & Form Controls */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] input[type="date"],
+[data-theme="dark"] input[type="search"],
+[data-theme="dark"] select,
+[data-theme="dark"] textarea,
+body.dark-theme .form-control,
+body.dark-theme input[type="text"],
+body.dark-theme input[type="email"],
+body.dark-theme input[type="password"],
+body.dark-theme input[type="number"],
+body.dark-theme input[type="date"],
+body.dark-theme input[type="search"],
+body.dark-theme select,
+body.dark-theme textarea {
+  background-color: var(--cb-bg-subtle);
+  color: var(--cb-text-primary);
+  border-color: var(--cb-border-default);
+}
+
+[data-theme="dark"] .form-control:focus,
+body.dark-theme .form-control:focus {
+  background-color: var(--cb-bg-surface);
+  border-color: var(--cb-brand-primary);
+  box-shadow: 0 0 0 3px var(--cb-brand-primary-light);
+}
+
+[data-theme="dark"] .form-label,
+body.dark-theme .form-label {
+  color: var(--cb-text-secondary);
+}
+
+/* Modals & Dialogs */
+[data-theme="dark"] .modal-dialog,
+[data-theme="dark"] .drawer-content,
+body.dark-theme .modal-dialog,
+body.dark-theme .drawer-content {
+  background-color: var(--cb-bg-surface);
+  border: 1px solid var(--cb-border-strong);
+  box-shadow: var(--cb-shadow-2xl);
+}
+
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer,
+body.dark-theme .modal-header,
+body.dark-theme .modal-footer {
+  border-color: var(--cb-border-default);
+}
+
+/* Map Containers & Leaflet Inversion in Dark Mode */
+[data-theme="dark"] .map-wrapper,
+body.dark-theme .map-wrapper {
+  border-color: var(--cb-border-default);
+  background-color: #111827;
+}
+
+[data-theme="dark"] .leaflet-layer,
+body.dark-theme .leaflet-layer {
+  filter: brightness(0.7) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+[data-theme="dark"] .leaflet-popup-content-wrapper,
+body.dark-theme .leaflet-popup-content-wrapper {
+  background-color: var(--cb-bg-surface-elevated) !important;
+  color: var(--cb-text-primary) !important;
+  border: 1px solid var(--cb-border-strong);
+  box-shadow: var(--cb-shadow-xl);
+}
+
+[data-theme="dark"] .leaflet-popup-tip,
+body.dark-theme .leaflet-popup-tip {
+  background-color: var(--cb-bg-surface-elevated) !important;
+}
+
+[data-theme="dark"] .leaflet-control-zoom a,
+body.dark-theme .leaflet-control-zoom a {
+  background-color: var(--cb-bg-surface) !important;
+  color: var(--cb-text-primary) !important;
+  border-color: var(--cb-border-default) !important;
+}
+
+[data-theme="dark"] .map-header-bar,
+body.dark-theme .map-header-bar {
+  background-color: var(--cb-bg-surface);
+  border-bottom: 1px solid var(--cb-border-default);
+}
+
+[data-theme="dark"] .map-legend,
+body.dark-theme .map-legend {
+  background-color: var(--cb-bg-surface-glass-heavy);
+  border: 1px solid var(--cb-border-default);
+  color: var(--cb-text-primary);
+}
+
+/* Buttons */
+[data-theme="dark"] .btn-outline,
+body.dark-theme .btn-outline {
+  border-color: var(--cb-border-default);
+  color: var(--cb-text-secondary);
+  background-color: transparent;
+}
+
+[data-theme="dark"] .btn-outline:hover,
+body.dark-theme .btn-outline:hover {
+  background-color: var(--cb-bg-surface-elevated);
+  border-color: var(--cb-border-strong);
+  color: var(--cb-text-primary);
+}
+
+/* Badges */
+[data-theme="dark"] .badge-dark,
+body.dark-theme .badge-dark {
+  background-color: var(--cb-bg-subtle);
+  color: var(--cb-text-secondary);
+  border: 1px solid var(--cb-border-default);
+}
+
+/* Command Palette */
+[data-theme="dark"] .cb-command-dialog,
+body.dark-theme .cb-command-dialog {
+  background-color: var(--cb-bg-surface);
+  border: 1px solid var(--cb-border-strong);
+}
+
+[data-theme="dark"] .cb-command-input-wrap,
+body.dark-theme .cb-command-input-wrap {
+  border-bottom-color: var(--cb-border-default);
+}
+
+[data-theme="dark"] .cb-command-item:hover,
+[data-theme="dark"] .cb-command-item.active,
+body.dark-theme .cb-command-item:hover,
+body.dark-theme .cb-command-item.active {
+  background-color: var(--cb-brand-primary-light);
+  color: var(--cb-brand-primary);
+}
+
+/* QR Scanner */
+[data-theme="dark"] .qr-scanner-box,
+body.dark-theme .qr-scanner-box {
+  border-color: var(--cb-border-default);
+  background-color: #030712;
+}
+
+/* Footers */
+[data-theme="dark"] .footer,
+body.dark-theme .footer {
+  background-color: #030712;
+  border-top: 1px solid var(--cb-border-default);
+}

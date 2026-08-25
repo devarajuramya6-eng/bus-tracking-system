@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CityBus — Intelligent Real-Time Public Transportation Platform</title>
+  <meta name="description" content="Commercial-grade public transit tracking, live GPS radar, journey planning, and contactless QR ticketing for Vijayawada and Amaravati Capital Region.">
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <!-- Enterprise Stylesheet Bundle -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!-- Global Navigation Header -->
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <i class="fa-solid fa-bus"></i>
+        </div>
+        <div class="logo-text">
+          City<span>Bus</span>
+          <small class="live-tag">LIVE RADAR</small>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <ul class="nav-links">
+        <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="passenger-map.html"><i class="fa-solid fa-map-location-dot"></i> Live Map</a></li>
+        <li><a href="journey-planner.html"><i class="fa-solid fa-route"></i> Plan Trip</a></li>
+        <li><a href="buses.html"><i class="fa-solid fa-bus-simple"></i> Buses</a></li>
+        <li><a href="routes.html"><i class="fa-solid fa-signs-post"></i> Routes</a></li>
+        <li><a href="stops.html"><i class="fa-solid fa-location-dot"></i> Stops</a></li>
+        <li><a href="tickets.html"><i class="fa-solid fa-ticket"></i> Book Pass</a></li>
+      </ul>
+
+      <!-- Right Action Controls -->
+      <div class="nav-actions">
+        <!-- Quick Command Palette Trigger -->
+        <button class="icon-btn" id="cmd-palette-btn" title="Command Palette (Ctrl + K)">
+          <i class="fa-solid fa-terminal"></i>
+        </button>
+
+        <!-- Theme Toggle Button -->
+        <button class="theme-toggle" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- Notification Bell -->
+        <button class="icon-btn" id="notification-bell-btn" title="Notifications">
+          <i class="fa-solid fa-bell"></i>
+          <span class="badge badge-danger" id="unread-notifications-count" style="position: absolute; top: -4px; right: -4px; font-size: 0.6rem; padding: 2px 5px; display: none;">0</span>
+        </button>
+
+        <!-- Role Workspace Dropdown -->
+        <div class="dropdown">
+          <a href="login.html" class="btn btn-outline btn-sm" id="auth-nav-btn">
+            <i class="fa-solid fa-user"></i> <span id="user-display-name">Sign In</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Service Alert Ticker Bar -->
+  <div class="alert-bar" id="alert-banner" style="background: rgba(37, 99, 235, 0.1); border-bottom: 1px solid var(--cb-border-subtle); padding: 0.5rem 1rem; font-size: 0.85rem; color: var(--cb-text-secondary); display: flex; align-items: center; justify-content: space-between;">
+    <div style="display: flex; align-items: center; gap: 0.5rem; overflow: hidden; white-space: nowrap;">
+      <span class="badge badge-primary"><i class="fa-solid fa-bullhorn"></i> Transit Notice</span>
+      <span id="alert-text">Normal city transit operations active across all 20 corridors in Vijayawada & Amaravati.</span>
+    </div>
+    <a href="routes.html" style="color: var(--cb-brand-primary); font-weight: 600; text-decoration: none; font-size: 0.8rem;">View Corridors →</a>
+  </div>
+
+  <!-- Hero Section with Live Search & Telemetry Overview -->
+  <section class="hero-section" style="padding: 3.5rem 1.5rem 2rem; background: radial-gradient(circle at top right, var(--cb-brand-primary-light), transparent 60%);">
+    <div style="max-width: 1280px; margin: 0 auto;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center;">
+        
+        <!-- Left Hero Text & Search Box -->
+        <div class="anim-fade-up">
+          <div class="badge badge-primary" style="margin-bottom: 1rem;">
+            <span class="badge-dot"></span> Next-Gen Urban Transit Platform
+          </div>
+          <h1 style="font-size: 2.8rem; font-weight: 800; line-height: 1.15; color: var(--cb-text-primary); margin-bottom: 1rem;">
+            Track Your City Bus in Real-Time.
+          </h1>
+          <p style="font-size: 1.05rem; color: var(--cb-text-secondary); line-height: 1.6; margin-bottom: 2rem;">
+            High-precision GPS telemetry, sub-minute dynamic ETAs, contactless QR ticketing, and automated delay propagation for Vijayawada & Amaravati Capital Region.
+          </p>
+
+          <!-- Interactive Search & Geolocation Box -->
+          <div class="card" style="padding: 1.25rem; box-shadow: var(--cb-shadow-lg); border: 1px solid var(--cb-border-strong);">
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem;">
+              <div style="position: relative; flex: 1;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--cb-text-muted);"></i>
+                <input type="text" id="hero-search-input" class="form-control" placeholder="Search by bus number (e.g. 27A), stop, or route..." style="padding-left: 2.5rem;">
+              </div>
+              <button class="btn btn-primary" id="hero-search-btn">
+                <i class="fa-solid fa-arrow-right"></i> Search
+              </button>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: var(--cb-text-muted);">
+              <span>Popular: <a href="buses.html?q=27A" style="color: var(--cb-brand-primary);">Bus 27A</a>, <a href="stops.html?q=Benz" style="color: var(--cb-brand-primary);">Benz Circle</a>, <a href="routes.html?q=Airport" style="color: var(--cb-brand-primary);">Airport Express</a></span>
+              <button class="btn btn-outline btn-xs" id="hero-locate-btn">
+                <i class="fa-solid fa-location-crosshairs"></i> Find Nearby Buses
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Hero Live Map Preview Card -->
+        <div class="anim-fade-up" style="position: relative;">
+          <div class="card" style="padding: 0.5rem; overflow: hidden; box-shadow: var(--cb-shadow-xl); border: 1px solid var(--cb-border-default);">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="live-pin pulse"></span>
+                <strong style="font-size: 0.85rem; color: var(--cb-text-primary);">LIVE TRANSIT RADAR</strong>
+              </div>
+              <a href="passenger-map.html" class="btn btn-outline btn-xs">
+                <i class="fa-solid fa-expand"></i> Full Screen Map
+              </a>
+            </div>
+            <div id="home-live-map" style="height: 380px; width: 100%; border-radius: var(--cb-radius-md);"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Operating Buses Grid Section -->
+  <section style="padding: 3rem 1.5rem; max-width: 1280px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+      <div>
+        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 0.25rem;">
+          Active Municipal Fleet
+        </h2>
+        <p style="color: var(--cb-text-secondary); font-size: 0.95rem;">
+          Real-time tracking of active city express corridors and feeder networks.
+        </p>
+      </div>
+      <a href="buses.html" class="btn btn-outline btn-sm">
+        View All 50 Buses <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <!-- Featured Buses Grid -->
+    <div class="buses-grid" id="featured-buses-grid">
+      <!-- Dynamically Rendered by js/passenger/home.js -->
+    </div>
+  </section>
+
+  <!-- Role Workspaces Quick Launch -->
+  <section style="background: var(--cb-bg-subtle); padding: 3rem 1.5rem; border-top: 1px solid var(--cb-border-subtle); border-bottom: 1px solid var(--cb-border-subtle);">
+    <div style="max-width: 1280px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 2.5rem;">
+        <span class="badge badge-primary">Enterprise Portal</span>
+        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--cb-text-primary); margin-top: 0.35rem;">
+          Multi-Role Transit Operations Workspaces
+        </h2>
+        <p style="color: var(--cb-text-secondary); font-size: 0.95rem;">
+          Role-tailored interfaces for municipal drivers, conductors, tactical dispatchers, and fleet managers.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem;">
+        
+        <a href="driver.html" class="card hover-lift" style="text-decoration: none; padding: 1.5rem; border-top: 4px solid var(--cb-brand-primary);">
+          <i class="fa-solid fa-id-card-clip" style="font-size: 2rem; color: var(--cb-brand-primary); margin-bottom: 1rem;"></i>
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.25rem;">Driver Cockpit</h3>
+          <p style="font-size: 0.85rem; color: var(--cb-text-secondary);">GPS broadcaster, trip lifecycle controls, and SOS panic button.</p>
+        </a>
+
+        <a href="conductor.html" class="card hover-lift" style="text-decoration: none; padding: 1.5rem; border-top: 4px solid var(--cb-status-success);">
+          <i class="fa-solid fa-qrcode" style="font-size: 2rem; color: var(--cb-status-success); margin-bottom: 1rem;"></i>
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.25rem;">Conductor Terminal</h3>
+          <p style="font-size: 0.85rem; color: var(--cb-text-secondary);">Camera QR scanner, cryptographic validation, and headcount.</p>
+        </a>
+
+        <a href="dispatcher.html" class="card hover-lift" style="text-decoration: none; padding: 1.5rem; border-top: 4px solid var(--cb-category-airport);">
+          <i class="fa-solid fa-tower-broadcast" style="font-size: 2rem; color: var(--cb-category-airport); margin-bottom: 1rem;"></i>
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.25rem;">Tactical Dispatcher</h3>
+          <p style="font-size: 0.85rem; color: var(--cb-text-secondary);">Radar fleet monitoring, driver messaging, and emergency overrides.</p>
+        </a>
+
+        <a href="admin.html" class="card hover-lift" style="text-decoration: none; padding: 1.5rem; border-top: 4px solid var(--cb-status-warning);">
+          <i class="fa-solid fa-chart-line" style="font-size: 2rem; color: var(--cb-status-warning); margin-bottom: 1rem;"></i>
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.25rem;">Operations Admin</h3>
+          <p style="font-size: 0.85rem; color: var(--cb-text-secondary);">Visual map route editor, KPI analytics, and maintenance logs.</p>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Global Footer -->
+  <footer style="background: var(--cb-bg-surface); padding: 3rem 1.5rem 1.5rem; border-top: 1px solid var(--cb-border-subtle); margin-top: auto;">
+    <div style="max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <div class="logo-icon"><i class="fa-solid fa-bus"></i></div>
+          <span style="font-weight: 800; font-size: 1.25rem; color: var(--cb-text-primary);">City<span style="color: var(--cb-brand-primary);">Bus</span></span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--cb-text-secondary); line-height: 1.6; max-width: 320px;">
+          Commercial-grade intelligent public transportation management system powering municipal transit authorities with real-time telemetry and contactless ticketing.
+        </p>
+      </div>
+
+      <div>
+        <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.75rem;">Passenger</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.85rem;">
+          <li><a href="passenger-map.html" style="color: var(--cb-text-secondary); text-decoration: none;">Live Radar Map</a></li>
+          <li><a href="journey-planner.html" style="color: var(--cb-text-secondary); text-decoration: none;">Trip Planner</a></li>
+          <li><a href="buses.html" style="color: var(--cb-text-secondary); text-decoration: none;">Buses Catalog</a></li>
+          <li><a href="tickets.html" style="color: var(--cb-text-secondary); text-decoration: none;">Buy Tickets</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.75rem;">Operations</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.85rem;">
+          <li><a href="driver.html" style="color: var(--cb-text-secondary); text-decoration: none;">Driver Cockpit</a></li>
+          <li><a href="conductor.html" style="color: var(--cb-text-secondary); text-decoration: none;">Conductor App</a></li>
+          <li><a href="dispatcher.html" style="color: var(--cb-text-secondary); text-decoration: none;">Dispatcher Control</a></li>
+          <li><a href="admin.html" style="color: var(--cb-text-secondary); text-decoration: none;">Admin Portal</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.75rem;">System & API</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.85rem;">
+          <li><a href="health.html" style="color: var(--cb-text-secondary); text-decoration: none;">Node Health</a></li>
+          <li><a href="simulation.html" style="color: var(--cb-text-secondary); text-decoration: none;">Simulator Room</a></li>
+          <li><a href="analytics.html" style="color: var(--cb-text-secondary); text-decoration: none;">Transit Analytics</a></li>
+          <li><a href="/api/v1/docs" target="_blank" style="color: var(--cb-brand-primary); text-decoration: none;">OpenAPI Spec</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="max-width: 1280px; margin: 0 auto; border-top: 1px solid var(--cb-border-subtle); padding-top: 1.25rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--cb-text-muted);">
+      <div>&copy; 2026 CityBus Enterprise Transit Platform. All rights reserved.</div>
+      <div style="display: flex; gap: 1rem;">
+        <span>Vijayawada Transit Authority</span>
+        <span>•</span>
+        <span>Version 2.0.0</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/core/ws.js"></script>
+  <script src="js/core/auth.js"></script>
+  <script src="js/core/store.js"></script>
+  <script src="js/core/notifications.js"></script>
+  <script src="js/core/pwa.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/components/command_palette.js"></script>
+  <script src="js/components/global_search.js"></script>
+  <script src="js/map/map_engine.js"></script>
+  <script src="js/map/interpolator.js"></script>
+  <script src="js/map/bus_layer.js"></script>
+  <script src="js/map/route_layer.js"></script>
+  <script src="js/map/stop_layer.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/passenger/home.js"></script>
+</body>
+</html>

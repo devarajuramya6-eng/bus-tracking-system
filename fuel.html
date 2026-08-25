@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fuel Economy & Ledger — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="background: var(--cb-bg-subtle);">
+
+  <header class="header">
+    <div class="nav-container">
+      <div class="logo">
+        <div class="logo-icon" style="background: var(--cb-status-warning);"><i class="fa-solid fa-gas-pump"></i></div>
+        <div class="logo-text">Fuel<span>Log</span></div>
+      </div>
+      <div class="nav-actions">
+        <a href="admin.html" class="btn btn-outline btn-xs"><i class="fa-solid fa-arrow-left"></i> Admin Portal</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; margin: 1.5rem auto; padding: 0 1.5rem;">
+    <div style="margin-bottom: 1.5rem;">
+      <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--cb-text-primary);">
+        Fleet Fuel Logs & Mileage Analytics
+      </h1>
+      <p style="color: var(--cb-text-secondary); font-size: 0.9rem;">
+        Vehicle consumption tracking, cost per kilometer, and depot pump refills.
+      </p>
+    </div>
+
+    <!-- Chart Strip -->
+    <div class="card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+      <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 1rem;">
+        Fleet Mileage Comparison (km/L)
+      </h3>
+      <canvas id="fuel-efficiency-chart" style="width: 100%; height: 260px;"></canvas>
+    </div>
+
+    <!-- Data Table -->
+    <div class="card" style="padding: 1.5rem;">
+      <div id="fuel-table-container"></div>
+    </div>
+  </main>
+
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/components/datatable.js"></script>
+  <script src="js/components/chart_engine.js"></script>
+  <script src="js/admin/fuel_manager.js"></script>
+</body>
+</html>

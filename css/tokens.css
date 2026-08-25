@@ -1,0 +1,233 @@
+/* ==========================================================================
+   CityBus Enterprise Design System - CSS Custom Properties & Design Tokens
+   File: css/tokens.css
+   ========================================================================== */
+
+:root {
+  /* ------------------------------------------------------------------------
+     1. Brand & Theme Colors (Light Theme Defaults)
+     ------------------------------------------------------------------------ */
+  --cb-brand-primary: #2563EB;
+  --cb-brand-primary-hover: #1D4ED8;
+  --cb-brand-primary-active: #1E40AF;
+  --cb-brand-primary-light: #EFF6FF;
+  --cb-brand-primary-subtle: rgba(37, 99, 235, 0.08);
+  --cb-brand-primary-glow: rgba(37, 99, 235, 0.28);
+
+  --cb-brand-secondary: #0F172A;
+  --cb-brand-secondary-hover: #1E293B;
+  --cb-brand-accent: #06B6D4;
+  --cb-brand-accent-hover: #0891B2;
+  --cb-brand-accent-light: #ECFEFF;
+
+  /* Status Colors */
+  --cb-status-success: #10B981;
+  --cb-status-success-hover: #059669;
+  --cb-status-success-light: #ECFDF5;
+  --cb-status-success-subtle: rgba(16, 185, 129, 0.12);
+  --cb-status-success-glow: rgba(16, 185, 129, 0.3);
+
+  --cb-status-warning: #F59E0B;
+  --cb-status-warning-hover: #D97706;
+  --cb-status-warning-light: #FFFBEB;
+  --cb-status-warning-subtle: rgba(245, 158, 11, 0.12);
+  --cb-status-warning-glow: rgba(245, 158, 11, 0.3);
+
+  --cb-status-danger: #EF4444;
+  --cb-status-danger-hover: #DC2626;
+  --cb-status-danger-light: #FEF2F2;
+  --cb-status-danger-subtle: rgba(239, 68, 68, 0.12);
+  --cb-status-danger-glow: rgba(239, 68, 68, 0.3);
+
+  --cb-status-info: #0284C7;
+  --cb-status-info-hover: #0369A1;
+  --cb-status-info-light: #F0F9FF;
+  --cb-status-info-subtle: rgba(2, 132, 199, 0.12);
+  --cb-status-info-glow: rgba(2, 132, 199, 0.3);
+
+  /* Transit Specific Categorical Colors */
+  --cb-transit-express: #2563EB;
+  --cb-transit-local: #10B981;
+  --cb-transit-metro: #8B5CF6;
+  --cb-transit-airport: #EC4899;
+  --cb-transit-night: #F97316;
+  --cb-transit-electric: #14B8A6;
+
+  /* ------------------------------------------------------------------------
+     2. Surface & Background Tokens (Light Mode)
+     ------------------------------------------------------------------------ */
+  --cb-bg-base: #F8FAFC;
+  --cb-bg-subtle: #F1F5F9;
+  --cb-bg-surface: #FFFFFF;
+  --cb-bg-surface-elevated: #FFFFFF;
+  --cb-bg-surface-glass: rgba(255, 255, 255, 0.88);
+  --cb-bg-surface-glass-heavy: rgba(255, 255, 255, 0.95);
+  --cb-bg-overlay: rgba(15, 23, 42, 0.65);
+  --cb-bg-scrim: rgba(15, 23, 42, 0.45);
+
+  /* ------------------------------------------------------------------------
+     3. Text & Typography Tokens (Light Mode)
+     ------------------------------------------------------------------------ */
+  --cb-text-primary: #0F172A;
+  --cb-text-secondary: #334155;
+  --cb-text-muted: #64748B;
+  --cb-text-subtle: #94A3B8;
+  --cb-text-disabled: #CBD5E1;
+  --cb-text-inverse: #FFFFFF;
+  --cb-text-on-primary: #FFFFFF;
+
+  /* Typography Families */
+  --cb-font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --cb-font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Font Sizes */
+  --cb-text-2xs: 0.6875rem; /* 11px */
+  --cb-text-xs: 0.75rem;    /* 12px */
+  --cb-text-sm: 0.875rem;   /* 14px */
+  --cb-text-base: 1rem;     /* 16px */
+  --cb-text-lg: 1.125rem;   /* 18px */
+  --cb-text-xl: 1.25rem;    /* 20px */
+  --cb-text-2xl: 1.5rem;    /* 24px */
+  --cb-text-3xl: 1.875rem;  /* 30px */
+  --cb-text-4xl: 2.25rem;   /* 36px */
+  --cb-text-5xl: 3rem;      /* 48px */
+
+  /* Font Weights */
+  --cb-font-regular: 400;
+  --cb-font-medium: 500;
+  --cb-font-semibold: 600;
+  --cb-font-bold: 700;
+  --cb-font-extrabold: 800;
+
+  /* Line Heights */
+  --cb-leading-none: 1;
+  --cb-leading-tight: 1.25;
+  --cb-leading-snug: 1.375;
+  --cb-leading-normal: 1.5;
+  --cb-leading-relaxed: 1.625;
+  --cb-leading-loose: 2;
+
+  /* ------------------------------------------------------------------------
+     4. Borders & Outlines (Light Mode)
+     ------------------------------------------------------------------------ */
+  --cb-border-subtle: #F1F5F9;
+  --cb-border-default: #E2E8F0;
+  --cb-border-strong: #CBD5E1;
+  --cb-border-focus: #2563EB;
+  --cb-border-danger: #EF4444;
+
+  /* Border Radii */
+  --cb-radius-xs: 4px;
+  --cb-radius-sm: 6px;
+  --cb-radius-md: 10px;
+  --cb-radius-lg: 14px;
+  --cb-radius-xl: 20px;
+  --cb-radius-2xl: 28px;
+  --cb-radius-full: 9999px;
+
+  /* ------------------------------------------------------------------------
+     5. Shadows & Elevation (Light Mode)
+     ------------------------------------------------------------------------ */
+  --cb-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --cb-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --cb-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -1px rgba(15, 23, 42, 0.04);
+  --cb-shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03);
+  --cb-shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.09), 0 10px 10px -5px rgba(15, 23, 42, 0.03);
+  --cb-shadow-2xl: 0 25px 50px -12px rgba(15, 23, 42, 0.18);
+  --cb-shadow-inner: inset 0 2px 4px 0 rgba(15, 23, 42, 0.04);
+
+  /* ------------------------------------------------------------------------
+     6. Layout & Spacing
+     ------------------------------------------------------------------------ */
+  --cb-space-1: 0.25rem;  /* 4px */
+  --cb-space-2: 0.5rem;   /* 8px */
+  --cb-space-3: 0.75rem;  /* 12px */
+  --cb-space-4: 1rem;     /* 16px */
+  --cb-space-5: 1.25rem;  /* 20px */
+  --cb-space-6: 1.5rem;   /* 24px */
+  --cb-space-8: 2rem;     /* 32px */
+  --cb-space-10: 2.5rem;  /* 40px */
+  --cb-space-12: 3rem;    /* 48px */
+  --cb-space-16: 4rem;    /* 64px */
+  --cb-space-20: 5rem;    /* 80px */
+
+  --cb-container-max: 1320px;
+  --cb-container-fluid: 100%;
+  --cb-navbar-height: 72px;
+  --cb-sidebar-width: 280px;
+  --cb-sidebar-collapsed-width: 80px;
+  --cb-command-palette-max-w: 680px;
+
+  /* ------------------------------------------------------------------------
+     7. Transitions & Easing
+     ------------------------------------------------------------------------ */
+  --cb-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --cb-ease-decelerate: cubic-bezier(0.0, 0, 0.2, 1);
+  --cb-ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  --cb-ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  --cb-transition-fast: 150ms var(--cb-ease-standard);
+  --cb-transition-base: 220ms var(--cb-ease-standard);
+  --cb-transition-slow: 350ms var(--cb-ease-standard);
+  --cb-transition-spring: 450ms var(--cb-ease-spring);
+
+  /* ------------------------------------------------------------------------
+     8. Z-Index Scale
+     ------------------------------------------------------------------------ */
+  --cb-z-hide: -1;
+  --cb-z-base: 0;
+  --cb-z-elevated: 10;
+  --cb-z-dropdown: 100;
+  --cb-z-sticky: 200;
+  --cb-z-fixed: 300;
+  --cb-z-drawer-backdrop: 400;
+  --cb-z-drawer: 450;
+  --cb-z-modal-backdrop: 500;
+  --cb-z-modal: 550;
+  --cb-z-popover: 600;
+  --cb-z-tooltip: 700;
+  --cb-z-command: 800;
+  --cb-z-toast: 900;
+  --cb-z-emergency: 1000;
+}
+
+/* --------------------------------------------------------------------------
+   9. Backward-Compatibility Aliases
+   -------------------------------------------------------------------------- */
+:root {
+  --primary: var(--cb-brand-primary);
+  --primary-hover: var(--cb-brand-primary-hover);
+  --primary-light: var(--cb-brand-primary-light);
+  --primary-glow: var(--cb-brand-primary-glow);
+  --dark: var(--cb-brand-secondary);
+  --dark-surface: var(--cb-brand-secondary-hover);
+  --bg: var(--cb-bg-base);
+  --card-bg: var(--cb-bg-surface);
+  --surface: var(--cb-bg-surface);
+  --success: var(--cb-status-success);
+  --success-light: var(--cb-status-success-light);
+  --warning: var(--cb-status-warning);
+  --warning-light: var(--cb-status-warning-light);
+  --danger: var(--cb-status-danger);
+  --danger-light: var(--cb-status-danger-light);
+  --info: var(--cb-status-info);
+  --info-light: var(--cb-status-info-light);
+  --text-main: var(--cb-text-primary);
+  --text-body: var(--cb-text-secondary);
+  --text-muted: var(--cb-text-muted);
+  --text-light: var(--cb-text-subtle);
+  --border-color: var(--cb-border-default);
+  --border-light: var(--cb-border-subtle);
+  --border-radius-sm: var(--cb-radius-sm);
+  --border-radius: var(--cb-radius-md);
+  --border-radius-lg: var(--cb-radius-lg);
+  --border-radius-xl: var(--cb-radius-xl);
+  --border-radius-full: var(--cb-radius-full);
+  --shadow-sm: var(--cb-shadow-sm);
+  --shadow-md: var(--cb-shadow-md);
+  --shadow-lg: var(--cb-shadow-lg);
+  --shadow-xl: var(--cb-shadow-xl);
+  --max-width: var(--cb-container-max);
+  --nav-height: var(--cb-navbar-height);
+  --transition: var(--cb-transition-base);
+}

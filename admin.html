@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transit Operations & Administration Portal — CityBus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="background: var(--cb-bg-subtle);">
+
+  <!-- Admin Navigation Header -->
+  <header class="header">
+    <div class="nav-container">
+      <div class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <div class="logo-text">Operations<span>Portal</span></div>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle-btn"><i class="fa-solid fa-moon"></i></button>
+        <a href="index.html" class="btn btn-outline btn-xs"><i class="fa-solid fa-arrow-left"></i> Passenger View</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Admin Main Layout with Sidebar -->
+  <div style="display: flex; max-width: 1440px; margin: 1.5rem auto; padding: 0 1.5rem; gap: 1.5rem;">
+    
+    <!-- Sidebar Nav Links -->
+    <aside style="width: 260px; flex-shrink: 0;">
+      <div class="card" style="padding: 1rem;">
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.35rem;">
+          <li><a href="#" class="sidebar-link active" data-section="section-overview"><i class="fa-solid fa-gauge-high"></i> Overview & KPIs</a></li>
+          <li><a href="#" class="sidebar-link" data-section="section-fleet"><i class="fa-solid fa-bus"></i> Fleet Management</a></li>
+          <li><a href="#" class="sidebar-link" data-section="section-routes"><i class="fa-solid fa-route"></i> Route Corridors</a></li>
+          <li><a href="#" class="sidebar-link" data-section="section-editor"><i class="fa-solid fa-map-location-dot"></i> Visual Route Editor</a></li>
+          <li><a href="incidents.html" class="sidebar-link"><i class="fa-solid fa-triangle-exclamation"></i> Incidents Kanban</a></li>
+          <li><a href="maintenance.html" class="sidebar-link"><i class="fa-solid fa-wrench"></i> Maintenance Bay</a></li>
+          <li><a href="fuel.html" class="sidebar-link"><i class="fa-solid fa-gas-pump"></i> Fuel Management</a></li>
+          <li><a href="analytics.html" class="sidebar-link"><i class="fa-solid fa-chart-pie"></i> Analytics & OTP</a></li>
+          <li><a href="simulation.html" class="sidebar-link"><i class="fa-solid fa-sliders"></i> Simulator Controls</a></li>
+          <li><a href="health.html" class="sidebar-link"><i class="fa-solid fa-heart-pulse"></i> Node Diagnostics</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Content Workspace Sections -->
+    <main style="flex: 1; min-width: 0;">
+      
+      <!-- Section 1: Overview & KPI Cards -->
+      <div class="admin-section" id="section-overview">
+        <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 1.25rem;">
+          Executive Transit Dashboard
+        </h2>
+
+        <!-- KPI 4-Card Strip -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+          <div class="card" style="padding: 1.25rem;">
+            <div style="font-size: 0.8rem; color: var(--cb-text-muted);">Total Fleet</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--cb-text-primary);" id="kpi-total-buses">50</div>
+            <div style="font-size: 0.75rem; color: var(--cb-status-success); margin-top: 0.25rem;">100% Provisioned</div>
+          </div>
+
+          <div class="card" style="padding: 1.25rem;">
+            <div style="font-size: 0.8rem; color: var(--cb-text-muted);">Active Vehicles</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--cb-status-success);" id="kpi-active-buses">42</div>
+            <div style="font-size: 0.75rem; color: var(--cb-text-muted); margin-top: 0.25rem;">Live on Corridors</div>
+          </div>
+
+          <div class="card" style="padding: 1.25rem;">
+            <div style="font-size: 0.8rem; color: var(--cb-text-muted);">Delayed Vehicles</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--cb-status-warning);" id="kpi-delayed-buses">5</div>
+            <div style="font-size: 0.75rem; color: var(--cb-text-muted); margin-top: 0.25rem;">Traffic bottlenecks</div>
+          </div>
+
+          <div class="card" style="padding: 1.25rem;">
+            <div style="font-size: 0.8rem; color: var(--cb-text-muted);">Today Revenue</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--cb-brand-primary);" id="kpi-revenue">₹45,200</div>
+            <div style="font-size: 0.75rem; color: var(--cb-status-success); margin-top: 0.25rem;">+14.2% vs last week</div>
+          </div>
+        </div>
+
+        <!-- Fleet Table -->
+        <div class="card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 1rem;">
+            Fleet Operations Ledger
+          </h3>
+          <div id="admin-buses-table-container"></div>
+        </div>
+      </div>
+
+      <!-- Section 2: Fleet Management Tab -->
+      <div class="admin-section" id="section-fleet" style="display: none;">
+        <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 1.25rem;">
+          Vehicle Fleet Roster
+        </h2>
+        <div class="card" style="padding: 1.5rem;">
+          <div id="admin-buses-roster-container"></div>
+        </div>
+      </div>
+
+      <!-- Section 3: Routes Management Tab -->
+      <div class="admin-section" id="section-routes" style="display: none;">
+        <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 1.25rem;">
+          Transit Corridors & Tariffs
+        </h2>
+        <div class="card" style="padding: 1.5rem;">
+          <div id="admin-routes-table-container"></div>
+        </div>
+      </div>
+
+      <!-- Section 4: Visual Map Route Editor -->
+      <div class="admin-section" id="section-editor" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+          <div>
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--cb-text-primary);">Visual Map Route Editor</h2>
+            <p style="color: var(--cb-text-secondary); font-size: 0.85rem;">Click on map to draw route waypoints. Drag markers to reposition stops.</p>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline btn-sm" id="clear-route-draw-btn"><i class="fa-solid fa-trash"></i> Clear</button>
+            <button class="btn btn-primary btn-sm" id="start-route-draw-btn"><i class="fa-solid fa-pen-nib"></i> Start Drawing</button>
+            <button class="btn btn-success btn-sm" id="save-drawn-route-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Publish Route</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 280px; gap: 1rem; margin-bottom: 1rem;">
+          <div class="card" style="padding: 0.5rem; height: 500px;">
+            <div id="visual-route-editor-map" style="width: 100%; height: 100%; border-radius: var(--cb-radius-md);"></div>
+          </div>
+
+          <div class="card" style="padding: 1.25rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.75rem;">Calculated Metrics</h4>
+            <div style="margin-bottom: 0.75rem;">
+              <span style="font-size: 0.75rem; color: var(--cb-text-muted);">Corridor Distance</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: var(--cb-brand-primary);" id="drawn-route-dist">0.0 km</div>
+            </div>
+            <div style="margin-bottom: 0.75rem;">
+              <span style="font-size: 0.75rem; color: var(--cb-text-muted);">Estimated Runtime</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: var(--cb-status-success);" id="drawn-route-dur">0 min</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/api.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/modal.js"></script>
+  <script src="js/components/datatable.js"></script>
+  <script src="js/map/map_engine.js"></script>
+  <script src="js/map/route_editor.js"></script>
+  <script src="js/admin/admin_dashboard.js"></script>
+</body>
+</html>
