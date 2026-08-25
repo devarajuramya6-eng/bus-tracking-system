@@ -129,3 +129,5 @@ Complete technical documentation is available in the `docs/` directory:
 <!-- feature/transit-core update -->
 
 <!-- feature/realtime-gps update -->
+
+<!-- feature/ticketing update -->
