@@ -131,3 +131,5 @@ Complete technical documentation is available in the `docs/` directory:
 <!-- feature/realtime-gps update -->
 
 <!-- feature/ticketing update -->
+
+<!-- feature/admin-dashboard update -->
