@@ -125,3 +125,5 @@ Complete technical documentation is available in the `docs/` directory:
 ---
 
 &copy; 2026 CityBus Enterprise Platform. All rights reserved.
+
+<!-- feature/transit-core update -->
