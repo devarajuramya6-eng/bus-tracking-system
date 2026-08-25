@@ -138,3 +138,4 @@ Complete technical documentation is available in the `docs/` directory:
 <!-- feature/ticketing update -->
 
 <!-- feature/admin-dashboard update -->
+ 
