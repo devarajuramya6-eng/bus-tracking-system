@@ -65,6 +65,11 @@
 ### 1. Clone & Setup
 ```bash
 cd "c:/Users/HP/OneDrive/Desktop/new bus/Bus"
+# Using Poetry (Recommended)
+pip install poetry
+poetry install
+
+# Alternatively, using requirements.txt
 pip install -r requirements.txt
 ```
 

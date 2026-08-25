@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "citybus-enterprise-platform"
+version = "0.1.0"
+description = "CityBus Enterprise Platform"
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+Flask = ">=2.3.0"
+Flask-Cors = ">=4.0.0"
+Flask-SQLAlchemy = ">=3.0.0"
+Flask-SocketIO = ">=5.3.6"
+SQLAlchemy = ">=2.0.0"
+PyJWT = ">=2.8.0"
+bcrypt = ">=4.1.0"
+requests = ">=2.31.0"
+python-dotenv = ">=1.0.0"
+redis = ">=5.0.0"
+eventlet = ">=0.35.0"
+gunicorn = ">=21.2.0"
+psycopg2-binary = ">=2.9.9"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
