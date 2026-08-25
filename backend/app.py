@@ -88,9 +88,18 @@ def create_app(config_class=Config):
     def not_found(error):
         return jsonify({"success": False, "message": "Resource or endpoint not found"}), 404
 
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return jsonify({"success": False, "message": "Method not allowed"}), 405
+
     @app.errorhandler(500)
     def internal_error(error):
         return jsonify({"success": False, "message": "Internal server error occurred"}), 500
+
+    @app.errorhandler(Exception)
+    def handle_exception(error):
+        return jsonify({"success": False, "message": str(error)}), 500
+
 
     # Bind Socket.IO
     init_socketio(app)

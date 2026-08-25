@@ -100,7 +100,25 @@ class CityBusApiClient {
         }
       }
 
-      const data = await response.json().catch(() => ({}));
+      const contentType = response.headers.get("content-type") || "";
+      let data = {};
+      const responseText = await response.text();
+
+      if (contentType.includes("text/html") || responseText.trim().startsWith("<")) {
+        console.error(`Received HTML response from ${url} (Status: ${response.status}):\n${responseText}`);
+        throw {
+          status: response.status,
+          message: `Server returned HTML error page instead of JSON. URL: ${url}`,
+          data: responseText,
+          isHtml: true
+        };
+      } else {
+        try {
+          data = JSON.parse(responseText);
+        } catch (e) {
+          data = {};
+        }
+      }
 
       if (!response.ok) {
         throw {
@@ -151,7 +169,19 @@ class CityBusApiClient {
         body: JSON.stringify({ refresh_token: refreshToken })
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type") || "";
+      let data = {};
+      const responseText = await response.text();
+      
+      if (contentType.includes("text/html") || responseText.trim().startsWith("<")) {
+        console.error(`Refresh token endpoint returned HTML (Status: ${response.status})`);
+      } else {
+        try {
+          data = JSON.parse(responseText);
+        } catch (e) {
+          data = {};
+        }
+      }
       if (response.ok && data.access_token) {
         this.setSession(data.access_token, data.refresh_token || refreshToken, null);
         this.isRefreshing = false;
