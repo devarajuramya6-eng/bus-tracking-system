@@ -108,6 +108,41 @@ class RouteService:
 
         return route.to_dict(include_stops=True), None
 
+    @classmethod
+    def get_route_details(cls, route_id: int) -> Optional[Dict[str, Any]]:
+        """Returns comprehensive route information including ordered stops and corridor geometry."""
+        route = Route.query.get(route_id)
+        if not route:
+            return None
+
+        # Fetch route stops in sequence
+        route_stops = RouteStop.query.filter_by(route_id=route_id).order_by(RouteStop.stop_order).all()
+        stops_data = []
+        for rs in route_stops:
+            stop = Stop.query.get(rs.stop_id)
+            if stop:
+                stops_data.append({
+                    "stop_id": stop.id,
+                    "name": stop.name,
+                    "latitude": stop.latitude,
+                    "longitude": stop.longitude,
+                    "stop_order": rs.stop_order,
+                    "distance_from_start_km": rs.distance_from_start or 0.0,
+                    "is_accessible": True
+                })
+
+        return {
+            "id": route.id,
+            "route_number": route.route_number,
+            "start_point": route.start_point,
+            "destination": route.destination,
+            "distance_km": route.distance_km,
+            "estimated_duration_min": route.estimated_duration,
+            "total_stops": len(stops_data),
+            "stops": stops_data,
+            "status": "ACTIVE_CORRIDOR"
+        }
+
     @staticmethod
     def get_corridor_statistics(route_id: int) -> Dict[str, Any]:
         """Calculates corridor performance KPIs: average speeds, on-time headway, and load factor."""
