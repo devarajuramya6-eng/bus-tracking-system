@@ -22,16 +22,17 @@ class PredictiveMechanicalFailureModel:
 
         km = bus.odometer_km or 35000.0
 
-        # Component health decay models
+        # Subsystem risk analysis with health degradation weighting
         alternator_health = max(40.0, round(100.0 - (km % 80000) / 1000.0, 1))
         brake_wear = min(90.0, round((km % 25000) / 280.0, 1))
         cooling_system_risk = 0.15 if bus.status != "Maintenance" else 0.85
+        oil_degradation_pct = min(85.0, round((km % 15000) / 180.0, 1))
 
-        risk_score = round((100.0 - alternator_health) * 0.3 + brake_wear * 0.4 + (cooling_system_risk * 100) * 0.3, 1)
+        risk_score = round((100.0 - alternator_health) * 0.25 + brake_wear * 0.35 + (cooling_system_risk * 100) * 0.25 + oil_degradation_pct * 0.15, 1)
 
-        recommendation = "CLEARED_FOR_SERVICE"
+        recommendation = "CLEARED_FOR_SCHEDULED_SERVICE"
         if risk_score > 70.0:
-            recommendation = "SCHEDULE_IMMEDIATE_OVERHAUL"
+            recommendation = "SCHEDULE_IMMEDIATE_DEPOT_OVERHAUL"
         elif risk_score > 45.0:
             recommendation = "INSPECT_BRAKE_LININGS_NEXT_DEPOT_VISIT"
 
@@ -43,8 +44,10 @@ class PredictiveMechanicalFailureModel:
                 "alternator_charging_health_pct": alternator_health,
                 "brake_pad_wear_pct": brake_wear,
                 "engine_cooling_loop_risk": cooling_system_risk,
+                "oil_viscosity_degradation_pct": oil_degradation_pct,
                 "suspension_bushing_integrity_pct": 88.0
             },
             "recommendation": recommendation,
+            "mean_time_between_failures_hours": round(max(120.0, 850.0 - (risk_score * 7.5)), 1),
             "days_until_next_maintenance": max(2, int(30 - (risk_score / 3.5)))
         }
