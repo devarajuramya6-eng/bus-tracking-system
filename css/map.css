@@ -1,0 +1,157 @@
+/**
+ * CityBus Enterprise Platform - Interactive Map & GIS Polyline Styles
+ * File: css/map.css
+ */
+
+.leaflet-container {
+    width: 100%;
+    height: 100%;
+    background-color: #f1f5f9;
+    font-family: inherit;
+}
+
+/* Custom Marker Styling */
+.citybus-bus-marker {
+    background: transparent;
+    border: none;
+}
+
+.bus-marker-pin {
+    width: 38px;
+    height: 38px;
+    background-color: var(--primary-color, #2563EB);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    border: 3px solid #ffffff;
+    font-size: 16px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.bus-marker-pin:hover {
+    transform: scale(1.15);
+}
+
+.bus-marker-pin.delayed {
+    background-color: var(--warning-color, #F59E0B);
+}
+
+.bus-marker-pin.emergency {
+    background-color: var(--danger-color, #EF4444);
+    animation: emergencyBlink 0.8s infinite alternate;
+}
+
+@keyframes emergencyBlink {
+    from { box-shadow: 0 0 4px #EF4444; }
+    to { box-shadow: 0 0 16px #EF4444, 0 0 24px #EF4444; }
+}
+
+.bus-marker-label {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.85);
+    color: #ffffff;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* Stop Marker */
+.stop-marker-pin {
+    width: 22px;
+    height: 22px;
+    background-color: #ffffff;
+    border: 3px solid #2563EB;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stop-marker-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #2563EB;
+    border-radius: 50%;
+}
+
+/* Map Popups */
+.leaflet-popup-content-wrapper {
+    background-color: var(--card-bg, #ffffff);
+    color: var(--text-color, #1e293b);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);
+    padding: 0;
+    overflow: hidden;
+}
+
+.leaflet-popup-content {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.map-popup-card {
+    padding: 14px 16px;
+    min-width: 200px;
+}
+
+.map-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+    padding-bottom: 6px;
+}
+
+.map-popup-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.map-popup-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted, #64748b);
+    margin-bottom: 10px;
+}
+
+/* Map Control Toolbar */
+.map-floating-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.map-control-btn {
+    width: 40px;
+    height: 40px;
+    background-color: var(--card-bg, #ffffff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 8px;
+    color: var(--text-color, #1e293b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.map-control-btn:hover {
+    background-color: var(--primary-light, #eff6ff);
+    color: var(--primary-color, #2563eb);
+}
