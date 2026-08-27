@@ -20,10 +20,20 @@ class KalmanFilterSmoother:
         self.lng_estimate: Optional[float] = None
         self.variance: float = 1.0
 
-    def update(self, measured_lat: float, measured_lng: float, accuracy: float = 5.0) -> Tuple[float, float]:
-        """
-        Ingests a new raw GPS observation and returns the filtered (smooth_lat, smooth_lng).
-        """
+    def update(self, measured_lat: float, measured_lng: float, measurement_variance: float = 4.0) -> Tuple[float, float]:
+        """Calculates optimal estimate by blending prediction with sensor measurement and covariance damping."""
+        # Dynamic Kalman Gain computation
+        k_gain_lat = self.p_lat / (self.p_lat + measurement_variance)
+        k_gain_lng = self.p_lng / (self.p_lng + measurement_variance)
+
+        self.lat = self.lat + k_gain_lat * (measured_lat - self.lat)
+        self.lng = self.lng + k_gain_lng * (measured_lng - self.lng)
+
+        self.p_lat = (1.0 - k_gain_lat) * self.p_lat
+        self.p_lng = (1.0 - k_gain_lng) * self.p_lng
+
+        return round(self.lat, 6), round(self.lng, 6)
+
         # Initial state setup
         if self.lat_estimate is None or self.lng_estimate is None:
             self.lat_estimate = measured_lat
