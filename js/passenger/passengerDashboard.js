@@ -103,6 +103,43 @@ class PassengerDashboardController {
         }
     }
 
+    renderNearbyBuses() {
+        const container = document.getElementById('nearby-buses-feed');
+        if (!container) return;
+
+        if (this.nearbyBuses.length === 0) {
+            container.innerHTML = '<div class="text-muted p-3 text-center"><i class="fas fa-bus-alt fa-2x mb-2 d-block"></i>No active buses currently in transit in your immediate radius. Check full schedule board.</div>';
+            return;
+        }
+
+        container.innerHTML = this.nearbyBuses.map(b => {
+            const distanceStr = b.distance_km ? `${b.distance_km.toFixed(1)} km away` : 'Approaching stop';
+            const etaMin = b.eta_minutes ? `${b.eta_minutes} mins` : 'Live';
+            const occupancyPct = b.occupancy ? Math.round((b.occupancy / 50) * 100) : 35;
+            
+            return `
+                <div class="nearby-bus-card p-3 mb-2 border rounded hover-shadow cursor-pointer" data-id="${b.id}">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div>
+                            <span class="badge badge-primary font-weight-bold">${b.route || 'City Line'}</span>
+                            <strong class="ml-2">${b.bus_number}</strong>
+                        </div>
+                        <span class="badge ${b.speed > 0 ? 'badge-success' : 'badge-secondary'}">
+                            <i class="fas fa-satellite-dish"></i> ${b.speed > 0 ? `${b.speed} km/h` : 'Stopped'}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted small mt-2">
+                        <span><i class="fas fa-map-marker-alt text-danger"></i> ${distanceStr}</span>
+                        <span><i class="fas fa-users text-primary"></i> ${occupancyPct}% Full</span>
+                        <span class="font-weight-bold text-success"><i class="fas fa-clock"></i> ETA ${etaMin}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        this.bindBusCardClicks();
+    }
+
     renderBusList(buses) {
         const listContainer = document.getElementById('live-buses-list');
         if (!listContainer) return;
