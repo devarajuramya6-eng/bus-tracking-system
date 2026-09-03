@@ -31,6 +31,9 @@ class ElasticCorridorRebalancer:
             elif lf <= ElasticCorridorRebalancer.UNDERLOAD_THRESHOLD_LF:
                 underloaded_routes.append({'route': route_num, 'load_factor': lf, 'surplus_vehicles': 1})
 
+        initial_overloaded_count = len(overloaded_routes)
+        initial_underloaded_count = len(underloaded_routes)
+
         reallocations = []
         for ov in overloaded_routes:
             if underloaded_routes:
@@ -43,8 +46,8 @@ class ElasticCorridorRebalancer:
                 })
 
         return {
-            'overcrowded_corridors_count': len(overloaded_routes),
-            'underutilized_corridors_count': len(underloaded_routes),
+            'overcrowded_corridors_count': initial_overloaded_count,
+            'underutilized_corridors_count': initial_underloaded_count,
             'recommended_reallocations': reallocations,
             'is_network_balanced': len(reallocations) == 0
         }

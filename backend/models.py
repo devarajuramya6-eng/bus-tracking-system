@@ -104,7 +104,9 @@ class Bus(db.Model):
 
     def to_dict(self):
         route_title = "Unassigned"
+        route_number = ""
         if self.route_rel:
+            route_number = getattr(self.route_rel, 'route_number', '') or ""
             route_title = f"{self.route_rel.start_point} → {self.route_rel.destination}"
 
         driver_name = "Unassigned"
@@ -116,6 +118,7 @@ class Bus(db.Model):
         return {
             "id": self.id,
             "bus_number": self.bus_number,
+            "route_number": route_number,
             "route_id": self.route_id,
             "route": route_title,
             "driver_id": self.driver_id,

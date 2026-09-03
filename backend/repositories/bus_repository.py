@@ -5,19 +5,29 @@ File: backend/repositories/bus_repository.py
 
 from datetime import datetime, timedelta
 import math
-from models import db, Bus, Telemetry
+from models import db, Bus, Route, Telemetry
 
 
 class BusRepository:
     """Isolates all database queries related to Buses and Telemetry."""
 
     @staticmethod
-    def get_all(status=None, route_id=None, limit=100):
+    def get_all(status=None, route_id=None, search=None, limit=100):
         query = Bus.query
         if status and status != 'All':
             query = query.filter(Bus.status.ilike(status))
         if route_id:
             query = query.filter(Bus.route_id == route_id)
+        if search and str(search).strip():
+            term = f"%{str(search).strip()}%"
+            query = query.outerjoin(Route, Bus.route_id == Route.id).filter(
+                db.or_(
+                    Bus.bus_number.ilike(term),
+                    Route.route_number.ilike(term),
+                    Route.start_point.ilike(term),
+                    Route.destination.ilike(term)
+                )
+            )
         return query.limit(limit).all()
 
     @staticmethod

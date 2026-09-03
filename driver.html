@@ -4,19 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Driver Cockpit & Telemetry Terminal — CityBus</title>
+  <meta name="description" content="Driver high-contrast telemetry cockpit, live GPS broadcaster, and tactical trip controls for CityBus.">
+
+  <!-- Google Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Leaflet Map CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <!-- Enterprise Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
+  
   <style>
-    /* High-contrast touch-friendly cockpit styles */
+    /* High-Contrast Cockpit Styles */
     .driver-btn-trip {
-      height: 72px;
-      font-size: 1.25rem;
+      height: 68px;
+      font-size: 1.2rem;
       font-weight: 800;
-      border-radius: var(--cb-radius-lg);
+      border-radius: var(--cb-radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -26,95 +34,205 @@
       border: none;
       box-shadow: var(--cb-shadow-lg);
       transition: all 0.2s ease;
+      letter-spacing: 0.5px;
     }
-    .driver-btn-trip.btn-start { background: var(--cb-status-success); color: #FFF; }
-    .driver-btn-trip.btn-stop { background: var(--cb-status-danger); color: #FFF; }
+    .driver-btn-trip.btn-start {
+      background: linear-gradient(135deg, #10B981, #059669);
+      color: #FFFFFF;
+    }
+    .driver-btn-trip.btn-start:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      transform: translateY(-2px);
+    }
+    .driver-btn-trip.btn-stop {
+      background: linear-gradient(135deg, #EF4444, #DC2626);
+      color: #FFFFFF;
+    }
+    .driver-btn-trip.btn-stop:hover {
+      background: linear-gradient(135deg, #DC2626, #B91C1C);
+      transform: translateY(-2px);
+    }
     .driver-hud-stat {
-      background: var(--cb-bg-subtle);
-      border: 1px solid var(--cb-border-strong);
-      padding: 1.25rem;
+      background: var(--cb-bg-surface);
+      border: 1px solid var(--cb-border-default);
+      padding: 1.15rem 0.75rem;
       border-radius: var(--cb-radius-md);
       text-align: center;
+      box-shadow: var(--cb-shadow-sm);
+    }
+    .driver-hud-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--cb-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+    .driver-hud-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--cb-text-primary);
+    }
+    .map-card-container {
+      background: var(--cb-bg-surface);
+      border: 1px solid var(--cb-border-default);
+      border-radius: var(--cb-radius-md);
+      padding: 0.5rem;
+      min-height: 420px;
+      height: 440px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--cb-shadow-md);
+    }
+    #driver-mini-map {
+      width: 100%;
+      height: 100%;
+      min-height: 400px;
+      border-radius: var(--cb-radius-sm);
+      z-index: 1;
+    }
+    @media (max-width: 900px) {
+      .cockpit-main-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .cockpit-gauges-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+    @media (max-width: 480px) {
+      .cockpit-gauges-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .driver-btn-trip {
+        font-size: 1rem;
+        height: 60px;
+      }
     }
   </style>
 </head>
-<body style="background: #090D16; color: #F8FAFC;">
+<body style="background: var(--cb-bg-base); color: var(--cb-text-primary);">
 
   <!-- Cockpit Header -->
-  <header style="background: #0F172A; border-bottom: 2px solid #1E293B; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+  <header style="background: var(--cb-bg-surface); border-bottom: 1px solid var(--cb-border-default); padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
     <div style="display: flex; align-items: center; gap: 0.75rem;">
-      <div class="logo-icon" style="background: var(--cb-status-danger);"><i class="fa-solid fa-id-card-clip"></i></div>
+      <div class="logo-icon" style="background: var(--cb-status-danger); color: #FFF; width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+        <i class="fa-solid fa-id-card-clip"></i>
+      </div>
       <div>
-        <div style="font-weight: 800; font-size: 1.1rem; color: #FFF;">DRIVER COCKPIT HUD</div>
-        <div style="font-size: 0.75rem; color: #94A3B8;">Captain Ravi Kumar • Bus AP16-001 (Route 27A)</div>
+        <div style="font-weight: 800; font-size: 1.1rem; color: var(--cb-text-primary);">DRIVER COCKPIT HUD</div>
+        <div style="font-size: 0.75rem; color: var(--cb-text-muted);">
+          Captain <strong style="color: var(--cb-text-primary);">Ravi Kumar</strong> • Assigned: <strong style="color: var(--cb-brand-primary);">Bus 27A (AP16-001)</strong>
+        </div>
       </div>
     </div>
 
-    <div style="display: flex; align-items: center; gap: 0.75rem;">
+    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
       <span class="badge badge-danger" id="driver-status-badge"><span class="badge-dot"></span> OFFLINE (PARKED)</span>
       <span class="badge badge-dark" id="gps-status-badge"><span class="badge-dot"></span> GPS: STANDBY</span>
-      <a href="index.html" class="btn btn-outline btn-xs" style="color: #FFF;"><i class="fa-solid fa-power-off"></i> Exit</a>
+      <button class="theme-toggle btn btn-outline btn-xs" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <a href="index.html" class="btn btn-outline btn-xs"><i class="fa-solid fa-power-off"></i> Exit</a>
     </div>
   </header>
 
-  <main style="max-width: 1280px; margin: 1.5rem auto; padding: 0 1.5rem;">
+  <main style="max-width: 1280px; margin: 1.5rem auto; padding: 0 1.25rem;">
+    
+    <!-- Vehicle & Corridor Assignment Banner -->
+    <div class="card" style="padding: 1rem 1.25rem; margin-bottom: 1.25rem; background: var(--cb-bg-surface); border: 1px solid var(--cb-border-default); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <div style="background: var(--cb-brand-primary-light); color: var(--cb-brand-primary); font-weight: 800; font-size: 1.2rem; padding: 0.5rem 0.85rem; border-radius: var(--cb-radius-sm); border: 1px solid var(--cb-brand-primary);">
+          🚌 Bus 27A
+        </div>
+        <div>
+          <div style="font-weight: 700; font-size: 0.95rem; color: var(--cb-text-primary);">
+            Route 27A: Vijayawada PNBS → Guntur NTR Terminal
+          </div>
+          <div style="font-size: 0.8rem; color: var(--cb-text-muted);">
+            Corridor Length: 34.5 km • Next Stop: <strong id="driver-next-stop" style="color: var(--cb-text-primary);">Governorpet Central</strong>
+          </div>
+        </div>
+      </div>
+      <div style="font-size: 0.8rem; color: var(--cb-text-muted);">
+        Vehicle ID: <strong>BUS-101</strong> • Model: <strong>Ashok Leyland Electric</strong>
+      </div>
+    </div>
+
     <!-- Main Big Trip Action Button -->
-    <div style="margin-bottom: 1.5rem;">
+    <div style="margin-bottom: 1.25rem;">
       <button class="driver-btn-trip btn-start" id="driver-trip-btn">
         <i class="fa-solid fa-play"></i> START NEW TRIP (BROADCAST GPS)
       </button>
     </div>
 
     <!-- 4 High-Contrast Cockpit Gauges -->
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+    <div class="cockpit-gauges-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.25rem;">
       <div class="driver-hud-stat">
-        <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase;">Vehicle Speed</div>
-        <div style="font-size: 2.4rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #38BDF8;" id="driver-speed">0 km/h</div>
+        <div class="driver-hud-label">Vehicle Velocity</div>
+        <div class="driver-hud-val" style="color: var(--cb-brand-primary);" id="driver-speed">0 km/h</div>
       </div>
 
       <div class="driver-hud-stat">
-        <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase;">GPS Latitude</div>
-        <div style="font-size: 1.3rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: #FFF;" id="coords-lat">16.50620</div>
+        <div class="driver-hud-label">GPS Latitude</div>
+        <div class="driver-hud-val" style="font-size: 1.25rem;" id="coords-lat">16.50620</div>
       </div>
 
       <div class="driver-hud-stat">
-        <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase;">GPS Longitude</div>
-        <div style="font-size: 1.3rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: #FFF;" id="coords-lng">80.64800</div>
+        <div class="driver-hud-label">GPS Longitude</div>
+        <div class="driver-hud-val" style="font-size: 1.25rem;" id="coords-lng">80.64800</div>
       </div>
 
       <div class="driver-hud-stat">
-        <div style="font-size: 0.8rem; color: #94A3B8; text-transform: uppercase;">On-Board Pax</div>
-        <div style="font-size: 2.4rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #4ADE80;" id="driver-passengers">28</div>
+        <div class="driver-hud-label">On-Board Pax</div>
+        <div class="driver-hud-val" style="color: var(--cb-status-success);" id="driver-passengers">28</div>
       </div>
     </div>
 
-    <!-- Map & Stop Action Controls -->
-    <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem;">
-      <!-- Leaflet Map HUD -->
-      <div class="card" style="padding: 0.5rem; background: #0F172A; border-color: #1E293B; height: 380px;">
-        <div id="driver-mini-map" style="width: 100%; height: 100%; border-radius: var(--cb-radius-md);"></div>
+    <!-- Main Cockpit Map & Tactical Controls Grid -->
+    <div class="cockpit-main-grid" style="display: grid; grid-template-columns: 1fr 340px; gap: 1.25rem;">
+      
+      <!-- Leaflet Interactive Map Viewport -->
+      <div class="map-card-container">
+        <div id="driver-mini-map"></div>
+        <div id="map-status-overlay" style="position: absolute; top: 12px; left: 12px; z-index: 1000; background: var(--cb-bg-surface-glass); backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; border: 1px solid var(--cb-border-subtle); color: var(--cb-text-primary);">
+          <i class="fa-solid fa-map-pin" style="color: var(--cb-brand-primary);"></i> <span id="map-status-label">Tracking Bus 27A Coordinates</span>
+        </div>
       </div>
 
-      <!-- Quick Action Commands -->
-      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <button class="btn btn-primary btn-lg" id="arrived-stop-btn" style="height: 60px; font-weight: 700;">
+      <!-- Quick Action Commands & Sidebar -->
+      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+        
+        <button class="btn btn-primary btn-lg" id="arrived-stop-btn" style="height: 60px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
           <i class="fa-solid fa-location-dot"></i> Arrived at Bus Stop
         </button>
 
-        <button class="btn btn-warning btn-lg" id="driver-incident-btn" style="height: 60px; font-weight: 700; color: #000;">
+        <button class="btn btn-warning btn-lg" id="driver-incident-btn" style="height: 60px; font-weight: 700; color: #000; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
           <i class="fa-solid fa-triangle-exclamation"></i> Report Delay / Incident
         </button>
 
-        <button class="btn btn-danger btn-lg" id="driver-sos-btn" style="height: 70px; font-weight: 800; font-size: 1.2rem; background: #EF4444; border: none; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);">
+        <button class="btn btn-danger btn-lg" id="driver-sos-btn" style="height: 72px; font-weight: 800; font-size: 1.15rem; background: #EF4444; border: none; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
           <i class="fa-solid fa-bell anim-bounce"></i> EMERGENCY SOS PANIC
         </button>
+
+        <div class="card" style="padding: 1rem; background: var(--cb-bg-surface); border: 1px solid var(--cb-border-default); margin-top: auto;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.5rem;">
+            <i class="fa-solid fa-circle-info" style="color: var(--cb-brand-primary); margin-right: 0.35rem;"></i> Telemetry Dispatch Status
+          </div>
+          <div style="font-size: 0.75rem; color: var(--cb-text-muted); line-height: 1.5;">
+            Live GPS telemetry broadcasts at 2.8s intervals via Flask-SocketIO to transit tactical dispatch radar.
+          </div>
+        </div>
+
       </div>
     </div>
   </main>
 
+  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="js/data.js"></script>
+  <script src="js/core/theme.js"></script>
   <script src="js/core/api.js"></script>
   <script src="js/core/ws.js"></script>
   <script src="js/components/toast.js"></script>

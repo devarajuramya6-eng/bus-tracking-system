@@ -13,14 +13,31 @@ buses_bp = Blueprint('buses_v1', __name__, url_prefix='/api/v1/buses')
 
 @buses_bp.route('', methods=['GET'])
 def get_all_buses():
-    """Lists all operating buses with status filtering."""
+    """Lists all operating buses with status filtering and search query support."""
     try:
         status_filter = request.args.get('status')
         route_filter = request.args.get('route_id')
-        buses = BusRepository.get_all(status_filter, route_filter)
+        search_query = request.args.get('q') or request.args.get('search')
+        buses = BusRepository.get_all(status_filter, route_filter, search=search_query)
 
         return jsonify({
             "success": True,
+            "count": len(buses),
+            "buses": [bus.to_dict() for bus in buses]
+        }), 200
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Server error: {str(e)}"}), 500
+
+
+@buses_bp.route('/search', methods=['GET'])
+def search_buses():
+    """Explicit search endpoint for bus number, route number, or terminal names."""
+    try:
+        q = request.args.get('q') or request.args.get('query') or request.args.get('search', '')
+        buses = BusRepository.get_all(search=q) if q.strip() else BusRepository.get_all()
+        return jsonify({
+            "success": True,
+            "query": q,
             "count": len(buses),
             "buses": [bus.to_dict() for bus in buses]
         }), 200

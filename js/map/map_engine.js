@@ -14,9 +14,9 @@ class CityBusMapEngine {
     this.DEFAULT_CENTER = [16.5062, 80.6480]; // Vijayawada Central Coordinates
     this.DEFAULT_ZOOM = 13;
     this.TILE_PROVIDERS = {
+      osm: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
       light: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-      dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-      osm: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+      dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
     };
     this.activeMaps = new Map();
   }
@@ -33,48 +33,126 @@ class CityBusMapEngine {
 
     if (typeof L === 'undefined') {
       console.error('[CityBus Map] Leaflet library is missing.');
+      el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--cb-text-muted);font-size:0.9rem;"><i class="fa-solid fa-triangle-exclamation" style="margin-right:0.5rem;color:var(--cb-status-warning)"></i> Map temporarily unavailable.</div>';
       return null;
+    }
+
+    // Ensure container has visible dimensions
+    if (el.clientHeight === 0) {
+      el.style.minHeight = '350px';
     }
 
     const center = options.center || this.DEFAULT_CENTER;
     const zoom = options.zoom || this.DEFAULT_ZOOM;
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || document.body?.classList.contains('dark-theme');
 
-    const map = L.map(elementId, {
-      center: center,
-      zoom: zoom,
-      zoomControl: options.zoomControl !== false,
-      scrollWheelZoom: options.scrollWheelZoom !== false,
-      attributionControl: true,
-      maxZoom: 19,
-      minZoom: 10
-    });
+    let map = null;
+    try {
+      // Check if Leaflet map already initialized on element
+      if (el._leaflet_id) {
+        el._leaflet_id = null;
+      }
 
-    // Add Tile Layer
-    const tileUrl = isDark ? this.TILE_PROVIDERS.dark : this.TILE_PROVIDERS.light;
-    const tileLayer = L.tileLayer(tileUrl, {
+      map = L.map(elementId, {
+        center: center,
+        zoom: zoom,
+        zoomControl: options.zoomControl !== false,
+        scrollWheelZoom: options.scrollWheelZoom !== false,
+        attributionControl: true,
+        maxZoom: 19,
+        minZoom: 10
+      });
+    } catch (err) {
+      console.warn(`[CityBus Map] Failed to create Leaflet map on #${elementId}:`, err);
+      return null;
+    }
+
+    // Add Primary OpenStreetMap / Carto Tile Layer with Automatic Fallback
+    const primaryUrl = isDark ? this.TILE_PROVIDERS.dark : this.TILE_PROVIDERS.osm;
+    const tileLayer = L.tileLayer(primaryUrl, {
       maxZoom: 19,
       subdomains: 'abcd',
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
+
+    tileLayer.on('tileerror', () => {
+      if (tileLayer._url !== this.TILE_PROVIDERS.osm) {
+        tileLayer.setUrl(this.TILE_PROVIDERS.osm);
+      }
+    });
+
+    // Invalidate size once ready
+    setTimeout(() => {
+      try { map.invalidateSize(); } catch {}
+    }, 200);
+
+    window.addEventListener('resize', () => {
+      try { map.invalidateSize(); } catch {}
+    });
 
     // Track active maps
     this.activeMaps.set(elementId, { map, tileLayer });
 
     // Handle theme switching automatically
     window.addEventListener('citybus:theme-changed', (e) => {
-      const darkActive = e.detail.effective === 'dark';
-      tileLayer.setUrl(darkActive ? this.TILE_PROVIDERS.dark : this.TILE_PROVIDERS.light);
+      const darkActive = e.detail && e.detail.effective === 'dark';
+      const newUrl = darkActive ? this.TILE_PROVIDERS.dark : this.TILE_PROVIDERS.osm;
+      try {
+        tileLayer.setUrl(newUrl);
+      } catch {}
     });
 
     return map;
   }
 
   /**
+   * Compatibility alias for createMap
+   */
+  init(elementId, center = [16.5062, 80.6480], zoom = 13) {
+    return this.createMap(elementId, { center, zoom });
+  }
+
+  /**
+   * Creates a styled HTML Bus Icon for Leaflet
+   */
+  createBusIcon(bus = {}) {
+    if (typeof L === 'undefined') return null;
+    const num = bus.number || bus.bus_number || 'Bus';
+    const status = (bus.status || 'on-route').toLowerCase().replace(/\s+/g, '-');
+    let statusClass = 'on-route';
+    if (status.includes('delay')) statusClass = 'delayed';
+    if (status.includes('off') || status.includes('park')) statusClass = 'offline';
+    if (status.includes('emerg') || status.includes('sos')) statusClass = 'emergency';
+
+    return L.divIcon({
+      className: 'bus-marker-wrapper',
+      html: `
+        <div class="custom-bus-marker" style="display:flex;flex-direction:column;align-items:center;">
+          <div class="marker-pin ${statusClass}">
+            <i class="fa-solid fa-bus"></i>
+          </div>
+          <div class="marker-label">Bus ${num}</div>
+        </div>
+      `,
+      iconSize: [44, 48],
+      iconAnchor: [22, 24],
+      popupAnchor: [0, -24]
+    });
+  }
+
+  /**
+   * Draws a route polyline on the map
+   */
+  drawRoute(map, waypoints, color = '#2563EB', weight = 5) {
+    if (!map || !waypoints || waypoints.length === 0 || typeof L === 'undefined') return null;
+    return L.polyline(waypoints, { color: color, weight: weight, opacity: 0.85, lineJoin: 'round' }).addTo(map);
+  }
+
+  /**
    * Fits map bounds to include all provided coordinate points
    */
   fitBounds(map, points, padding = [40, 40]) {
-    if (!map || !points || points.length === 0) return;
+    if (!map || !points || points.length === 0 || typeof L === 'undefined') return;
     const latLngs = points.map(p => Array.isArray(p) ? p : [p.lat || p.latitude, p.lng || p.longitude]);
     const bounds = L.latLngBounds(latLngs);
     map.fitBounds(bounds, { padding: padding, maxZoom: 15, duration: 1.2 });
@@ -106,10 +184,9 @@ class CityBusMapEngine {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude, accuracy } = pos.coords;
-        if (map) {
+        if (map && typeof L !== 'undefined') {
           this.panTo(map, latitude, longitude, 14);
 
-          // Add user pulse marker
           const userIcon = L.divIcon({
             html: '<div class="user-gps-marker"></div>',
             className: 'user-gps-wrapper',
@@ -117,11 +194,10 @@ class CityBusMapEngine {
             iconAnchor: [10, 10]
           });
 
-          const marker = L.marker([latitude, longitude], { icon: userIcon })
+          L.marker([latitude, longitude], { icon: userIcon })
             .bindPopup(`<strong>📍 Your Current Location</strong><br><small style="color: #64748B;">GPS Accuracy: ±${Math.round(accuracy)}m</small>`)
             .addTo(map);
 
-          // Optional accuracy circle
           if (accuracy < 1000) {
             L.circle([latitude, longitude], {
               radius: accuracy,

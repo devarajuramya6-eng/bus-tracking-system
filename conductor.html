@@ -3,81 +3,381 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conductor Mobile Terminal — CityBus</title>
+  <title>Conductor Mobile POS & Pass Validation Terminal — CityBus</title>
+  <meta name="description" content="Conductor mobile POS terminal, camera QR ticket validator, passenger headcount monitor, and fare reconciliation ledger.">
+
+  <!-- Google Fonts & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Enterprise Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
-</head>
-<body style="background: var(--cb-bg-subtle);">
 
-  <header class="header">
-    <div class="nav-container">
-      <div class="logo">
-        <div class="logo-icon" style="background: var(--cb-status-success);"><i class="fa-solid fa-qrcode"></i></div>
-        <div class="logo-text">Conductor<span>POS</span></div>
+  <style>
+    /* Conductor Terminal Specific Styling */
+    .conductor-header-bar {
+      background: var(--cb-bg-surface);
+      border-bottom: 1px solid var(--cb-border-default);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .conductor-stat-card {
+      background: var(--cb-bg-surface);
+      border: 1px solid var(--cb-border-default);
+      border-radius: var(--cb-radius-md);
+      padding: 1.25rem;
+      text-align: center;
+      box-shadow: var(--cb-shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .scanner-viewfinder {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      background: #0F172A;
+      border-radius: var(--cb-radius-md);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      border: 2px dashed var(--cb-border-strong);
+    }
+    .scanner-laser {
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #EF4444, transparent);
+      box-shadow: 0 0 12px #EF4444;
+      animation: scanLaser 2s infinite ease-in-out;
+    }
+    @keyframes scanLaser {
+      0% { top: 15%; opacity: 0.3; }
+      50% { top: 85%; opacity: 1; }
+      100% { top: 15%; opacity: 0.3; }
+    }
+    .scan-target-box {
+      width: 160px;
+      height: 160px;
+      border: 2px solid var(--cb-brand-primary);
+      border-radius: 12px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .scan-target-box::before, .scan-target-box::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-color: #38BDF8;
+      border-style: solid;
+    }
+    .scan-target-box::before {
+      top: -2px; left: -2px;
+      border-width: 3px 0 0 3px;
+      border-radius: 6px 0 0 0;
+    }
+    .scan-target-box::after {
+      bottom: -2px; right: -2px;
+      border-width: 0 3px 3px 0;
+      border-radius: 0 0 6px 0;
+    }
+    .occupancy-meter {
+      height: 8px;
+      background: var(--cb-bg-subtle);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .occupancy-fill {
+      height: 100%;
+      background: var(--cb-brand-primary);
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    .recent-scans-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .recent-scans-table th {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      background: var(--cb-bg-subtle);
+      color: var(--cb-text-muted);
+      font-weight: 700;
+      border-bottom: 1px solid var(--cb-border-subtle);
+    }
+    .recent-scans-table td {
+      padding: 0.65rem 0.75rem;
+      border-bottom: 1px solid var(--cb-border-subtle);
+      color: var(--cb-text-primary);
+    }
+    @media (max-width: 900px) {
+      .conductor-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .conductor-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+    @media (max-width: 540px) {
+      .conductor-stats-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</head>
+<body style="background: var(--cb-bg-base); color: var(--cb-text-primary);">
+
+  <!-- Conductor Terminal Header -->
+  <header class="conductor-header-bar">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <div class="logo-icon" style="background: var(--cb-status-success); color: #FFF; width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+        <i class="fa-solid fa-qrcode"></i>
       </div>
-      <div class="nav-actions">
-        <span class="badge badge-success">Terminal Online</span>
-        <a href="index.html" class="btn btn-outline btn-xs"><i class="fa-solid fa-power-off"></i> Exit</a>
+      <div>
+        <div style="font-weight: 800; font-size: 1.1rem; color: var(--cb-text-primary);">
+          CONDUCTOR MOBILE POS
+        </div>
+        <div style="font-size: 0.75rem; color: var(--cb-text-muted);">
+          Conductor <strong style="color: var(--cb-text-primary);">Suresh V.</strong> • Assigned: <strong style="color: var(--cb-brand-primary);">Bus 27A (Route 27A)</strong>
+        </div>
       </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+      <span class="badge badge-success"><span class="badge-dot"></span> TERMINAL ONLINE</span>
+      <button class="theme-toggle btn btn-outline btn-xs" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <a href="index.html" class="btn btn-outline btn-xs"><i class="fa-solid fa-power-off"></i> Exit</a>
     </div>
   </header>
 
-  <main style="max-width: 500px; margin: 1.5rem auto; padding: 0 1rem;">
-    <!-- Headcount & Fare Stats -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-      <div class="card" style="padding: 1rem; text-align: center;">
-        <div style="font-size: 0.75rem; color: var(--cb-text-muted);">Current Headcount</div>
-        <div style="font-size: 2rem; font-weight: 800; color: var(--cb-brand-primary);" id="conductor-passenger-count">32</div>
-        <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem;">
-          <button class="btn btn-outline btn-xs" id="dec-passengers-btn">-1 Exit</button>
-          <button class="btn btn-primary btn-xs" id="inc-passengers-btn">+1 Board</button>
+  <main style="max-width: 1200px; margin: 1.5rem auto; padding: 0 1.25rem;">
+    
+    <!-- Assigned Transit Corridor Information Card -->
+    <div class="card" style="padding: 1rem 1.25rem; margin-bottom: 1.25rem; background: var(--cb-bg-surface); border: 1px solid var(--cb-border-default); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <div style="background: var(--cb-status-success-light); color: var(--cb-status-success); font-weight: 800; font-size: 1.1rem; padding: 0.4rem 0.8rem; border-radius: var(--cb-radius-sm); border: 1px solid var(--cb-status-success);">
+          🎫 POS #POS-2701
+        </div>
+        <div>
+          <div style="font-weight: 700; font-size: 0.95rem; color: var(--cb-text-primary);">
+            Route 27A: Vijayawada PNBS ➔ Guntur NTR Terminal
+          </div>
+          <div style="font-size: 0.8rem; color: var(--cb-text-muted);">
+            Fare Structure: Stage-based (₹15 - ₹45) • Electronic QR & Smart Card Enabled
+          </div>
+        </div>
+      </div>
+      <div style="font-size: 0.8rem; color: var(--cb-text-muted);">
+        Shift ID: <strong>SHF-902</strong> • Fare Ledger: <strong style="color: var(--cb-status-success);">Reconciled</strong>
+      </div>
+    </div>
+
+    <!-- 4 High-Contrast KPI Cards -->
+    <div class="conductor-stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+      
+      <!-- Headcount Card -->
+      <div class="conductor-stat-card">
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: var(--cb-text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">
+            Current Headcount
+          </div>
+          <div style="font-size: 2.2rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--cb-brand-primary);" id="conductor-passenger-count">
+            32
+          </div>
+          <div style="font-size: 0.75rem; color: var(--cb-text-muted); margin-top: 0.2rem;">
+            <span id="occupancy-pct-text">64%</span> of 50 Seating Cap
+          </div>
+          <div class="occupancy-meter">
+            <div class="occupancy-fill" id="occupancy-meter-fill" style="width: 64%;"></div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem;">
+          <button class="btn btn-outline btn-sm" id="dec-passengers-btn" style="flex: 1; font-weight: 700;">
+            <i class="fa-solid fa-user-minus"></i> -1 Exit
+          </button>
+          <button class="btn btn-primary btn-sm" id="inc-passengers-btn" style="flex: 1; font-weight: 700;">
+            <i class="fa-solid fa-user-plus"></i> +1 Board
+          </button>
         </div>
       </div>
 
-      <div class="card" style="padding: 1rem; text-align: center;">
-        <div style="font-size: 0.75rem; color: var(--cb-text-muted);">Passes Validated</div>
-        <div style="font-size: 2rem; font-weight: 800; color: var(--cb-status-success);" id="conductor-validated-count">48</div>
-        <div style="font-size: 0.75rem; color: var(--cb-text-muted); margin-top: 0.5rem;">Trip Total</div>
+      <!-- Passes Validated Card -->
+      <div class="conductor-stat-card">
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: var(--cb-text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">
+            Passes Validated
+          </div>
+          <div style="font-size: 2.2rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--cb-status-success);" id="conductor-validated-count">
+            48
+          </div>
+          <div style="font-size: 0.75rem; color: var(--cb-text-muted); margin-top: 0.2rem;">
+            Active Trip Total
+          </div>
+        </div>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--cb-text-muted); background: var(--cb-bg-subtle); padding: 0.4rem; border-radius: var(--cb-radius-sm);">
+          <i class="fa-solid fa-shield-halved" style="color: var(--cb-status-success);"></i> 100% Cryptographically Signed
+        </div>
       </div>
+
+      <!-- Cash / Total Fare Collected -->
+      <div class="conductor-stat-card">
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: var(--cb-text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">
+            Total Fares Collected
+          </div>
+          <div style="font-size: 2.2rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #F59E0B;" id="conductor-total-fare">
+            ₹2,160
+          </div>
+          <div style="font-size: 0.75rem; color: var(--cb-text-muted); margin-top: 0.2rem;">
+            Online: ₹1,845 • Cash: ₹315
+          </div>
+        </div>
+        <button class="btn btn-outline btn-xs" id="reconcile-shift-btn" style="margin-top: 1rem;">
+          <i class="fa-solid fa-receipt"></i> Shift Reconciliation
+        </button>
+      </div>
+
+      <!-- Fraud / Invalid Rejections -->
+      <div class="conductor-stat-card">
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: var(--cb-text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">
+            Rejected / Invalid
+          </div>
+          <div style="font-size: 2.2rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--cb-status-danger);" id="conductor-rejected-count">
+            2
+          </div>
+          <div style="font-size: 0.75rem; color: var(--cb-text-muted); margin-top: 0.2rem;">
+            1 Already Used • 1 Expired
+          </div>
+        </div>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--cb-text-muted); background: var(--cb-bg-subtle); padding: 0.4rem; border-radius: var(--cb-radius-sm);">
+          Fraud Protection Active
+        </div>
+      </div>
+
     </div>
 
-    <!-- Camera QR Scan Trigger Card -->
-    <div class="card" style="padding: 1.5rem; text-align: center; margin-bottom: 1.5rem;">
-      <div style="font-size: 3rem; color: var(--cb-brand-primary); margin-bottom: 1rem;">
-        <i class="fa-solid fa-qrcode"></i>
+    <!-- Main Workspace 2-Column Grid -->
+    <div class="conductor-grid" style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; align-items: start;">
+      
+      <!-- Left Column: Camera Scanner & Validation Feedback -->
+      <div>
+        
+        <!-- QR Scanner Controller Card -->
+        <div class="card" style="padding: 1.5rem; background: var(--cb-bg-surface); border: 1px solid var(--cb-border-default); margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div style="font-weight: 800; font-size: 1.1rem; color: var(--cb-text-primary);">
+              <i class="fa-solid fa-camera" style="color: var(--cb-brand-primary); margin-right: 0.4rem;"></i> Camera QR Pass Scanner
+            </div>
+            <span class="badge badge-primary" id="scanner-state-tag">Ready</span>
+          </div>
+
+          <!-- Viewfinder Window -->
+          <div class="scanner-viewfinder" id="scanner-viewfinder" style="display: none;">
+            <div class="scanner-laser"></div>
+            <div class="scan-target-box">
+              <i class="fa-solid fa-qrcode" style="font-size: 3.5rem; color: rgba(255,255,255,0.2);"></i>
+            </div>
+            <div style="position: absolute; bottom: 8px; font-size: 0.75rem; color: #94A3B8; text-align: center;">
+              Align Passenger QR Pass in target frame
+            </div>
+          </div>
+
+          <p style="font-size: 0.85rem; color: var(--cb-text-secondary); line-height: 1.5; margin-bottom: 1.25rem;" id="scanner-hint-text">
+            Tap below to activate device optical sensor and scan HMAC-SHA256 signed commuter passes.
+          </p>
+
+          <button class="btn btn-primary btn-lg btn-block" id="start-scanner-btn" style="height: 56px; font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%;">
+            <i class="fa-solid fa-camera"></i> Start Camera QR Scan
+          </button>
+        </div>
+
+        <!-- Dynamic Scan Result Feedback Card -->
+        <div id="scan-result-card" style="display: none; margin-bottom: 1.25rem;">
+          <!-- Injected dynamically by js/conductor/conductor_app.js -->
+        </div>
+
+        <!-- Manual Ticket Code Fallback Card -->
+        <div class="card" style="padding: 1.25rem; background: var(--cb-bg-surface); border: 1px solid var(--cb-border-default);">
+          <div style="font-size: 0.9rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.35rem;">
+            <i class="fa-solid fa-keyboard" style="color: var(--cb-brand-primary); margin-right: 0.4rem;"></i> Manual Ticket Code Entry
+          </div>
+          <div style="font-size: 0.8rem; color: var(--cb-text-muted); margin-bottom: 0.85rem;">
+            If passenger screen is cracked or camera cannot read QR code:
+          </div>
+          
+          <form id="manual-ticket-form" style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <input type="text" class="form-control" id="manual-ticket-id" placeholder="e.g. TCK-2608-0042" required style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">
+            <button type="submit" class="btn btn-primary" style="padding: 0 1.25rem; font-weight: 700;">
+              <i class="fa-solid fa-check"></i> Verify
+            </button>
+          </form>
+
+          <!-- Quick Test Simulator Chips -->
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; font-size: 0.75rem; color: var(--cb-text-muted);">
+            <span>Quick Test:</span>
+            <button type="button" class="btn btn-outline btn-xs test-code-chip" data-code="TCK-2608-0042" title="Test valid pass">Valid Pass</button>
+            <button type="button" class="btn btn-outline btn-xs test-code-chip" data-code="TCK-2608-USED" title="Test used pass">Already Used</button>
+            <button type="button" class="btn btn-outline btn-xs test-code-chip" data-code="TCK-2608-EXPR" title="Test expired pass">Expired Pass</button>
+          </div>
+        </div>
+
       </div>
-      <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 0.35rem;">
-        Validate Passenger Ticket
-      </h3>
-      <p style="font-size: 0.85rem; color: var(--cb-text-secondary); margin-bottom: 1.25rem;">
-        Point device camera at passenger QR pass to verify validity and token cryptographic signature.
-      </p>
 
-      <button class="btn btn-primary btn-lg btn-block" id="start-scanner-btn" style="height: 56px; font-weight: 700;">
-        <i class="fa-solid fa-camera"></i> Start Camera QR Scan
-      </button>
-    </div>
+      <!-- Right Column: Recent Validations Activity Table -->
+      <div>
+        <div class="card" style="padding: 1.25rem; background: var(--cb-bg-surface); border: 1px solid var(--cb-border-default);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div style="font-weight: 800; font-size: 1rem; color: var(--cb-text-primary);">
+              <i class="fa-solid fa-list-check" style="color: var(--cb-brand-primary); margin-right: 0.4rem;"></i> Validation Log
+            </div>
+            <button class="btn btn-outline btn-xs" id="clear-log-btn" title="Clear local list">Clear</button>
+          </div>
 
-    <!-- Scan Result Card (Initially Hidden) -->
-    <div id="scan-result-card" style="display: none; margin-bottom: 1.5rem;">
-      <!-- Injected by js/conductor/conductor_app.js -->
-    </div>
+          <div style="overflow-x: auto;">
+            <table class="recent-scans-table">
+              <thead>
+                <tr>
+                  <th>Ticket / Pass</th>
+                  <th>Status</th>
+                  <th>Fare</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="recent-scans-tbody">
+                <!-- Dynamically Populated -->
+              </tbody>
+            </table>
+          </div>
 
-    <!-- Manual Code Fallback -->
-    <div class="card" style="padding: 1.25rem;">
-      <div style="font-size: 0.85rem; font-weight: 700; color: var(--cb-text-primary); margin-bottom: 0.5rem;">
-        Manual Ticket Code Entry
+          <div id="log-empty-state" style="display: none; padding: 2rem 1rem; text-align: center; color: var(--cb-text-muted); font-size: 0.85rem;">
+            <i class="fa-solid fa-clipboard" style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5;"></i>
+            <div>No validations logged yet for this trip.</div>
+          </div>
+        </div>
       </div>
-      <form id="manual-ticket-form" style="display: flex; gap: 0.5rem;">
-        <input type="text" class="form-control" id="manual-ticket-id" placeholder="e.g. TCK-2608-0042" required>
-        <button type="submit" class="btn btn-outline"><i class="fa-solid fa-check"></i> Verify</button>
-      </form>
+
     </div>
   </main>
 
+  <!-- Scripts -->
+  <script src="js/core/theme.js"></script>
   <script src="js/core/api.js"></script>
   <script src="js/core/notifications.js"></script>
   <script src="js/components/toast.js"></script>

@@ -140,22 +140,36 @@
   </section>
 
   <!-- Live Operating Buses Grid Section -->
-  <section style="padding: 3rem 1.5rem; max-width: 1280px; margin: 0 auto;">
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+  <section id="fleet-section" style="padding: 3rem 1.5rem; max-width: 1280px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
       <div>
-        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 0.25rem;">
+        <h2 id="fleet-heading" style="font-size: 1.8rem; font-weight: 800; color: var(--cb-text-primary); margin-bottom: 0.25rem;">
           Active Municipal Fleet
         </h2>
-        <p style="color: var(--cb-text-secondary); font-size: 0.95rem;">
+        <p id="fleet-subheading" style="color: var(--cb-text-secondary); font-size: 0.95rem;">
           Real-time tracking of active city express corridors and feeder networks.
         </p>
       </div>
-      <a href="buses.html" class="btn btn-outline btn-sm">
-        View All 50 Buses <i class="fa-solid fa-arrow-right"></i>
-      </a>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button id="clear-search-btn" class="btn btn-outline btn-sm" style="display: none;">
+          <i class="fa-solid fa-xmark"></i> Clear Search
+        </button>
+        <a href="buses.html" class="btn btn-outline btn-sm">
+          View All 50 Buses <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
     </div>
 
-    <!-- Featured Buses Grid -->
+    <!-- Search Feedback Status Bar -->
+    <div id="search-status-bar" style="display: none; margin-bottom: 1.5rem; padding: 0.85rem 1.25rem; background: var(--cb-bg-surface); border: 1px solid var(--cb-border-default); border-radius: var(--cb-radius-md); justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--cb-text-primary);">
+        <i class="fa-solid fa-magnifying-glass" style="color: var(--cb-brand-primary);"></i>
+        <span id="search-status-text"></span>
+      </div>
+      <button class="btn btn-outline btn-xs" id="search-status-reset-btn">Reset</button>
+    </div>
+
+    <!-- Featured / Search Results Buses Grid -->
     <div class="buses-grid" id="featured-buses-grid">
       <!-- Dynamically Rendered by js/passenger/home.js -->
     </div>

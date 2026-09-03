@@ -44,6 +44,9 @@ class Bus(db.Model, BaseModelMixin):
 
     def to_dict(self):
         data = super().to_dict()
+        route_num = getattr(self.route_rel, 'route_number', '') if self.route_rel else ""
+        data['route_number'] = route_num
+        data['number'] = self.bus_number
         data['route'] = f"{self.route_rel.start_point} → {self.route_rel.destination}" if self.route_rel else "Unassigned"
         data['driver'] = self.driver_rel.name if self.driver_rel else "Unassigned"
         data['conductor'] = self.conductor_rel.name if self.conductor_rel else "Unassigned"

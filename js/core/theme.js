@@ -8,8 +8,10 @@
 
 class CityBusThemeManager {
   constructor() {
-    this.storageKey = 'citybus_theme_preference';
-    this.currentTheme = localStorage.getItem(this.storageKey) || 'light';
+    this.storageKey = 'theme';
+    this.fallbackStorageKey = 'citybus_theme_preference';
+    this.currentTheme = localStorage.getItem(this.storageKey) || localStorage.getItem(this.fallbackStorageKey) || 'light';
+    this._boundToggle = () => this.toggleTheme();
     this.init();
   }
 
@@ -25,10 +27,12 @@ class CityBusThemeManager {
       });
     }
 
-    // Attach click listeners to any .theme-toggle-btn in the DOM
-    document.addEventListener('DOMContentLoaded', () => {
+    // Attach click listeners to all theme toggle buttons in the DOM
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.attachThemeToggleButtons());
+    } else {
       this.attachThemeToggleButtons();
-    });
+    }
   }
 
   getEffectiveTheme() {
@@ -40,17 +44,20 @@ class CityBusThemeManager {
 
   applyTheme(theme) {
     this.currentTheme = theme;
-    localStorage.setItem(this.storageKey, theme);
+    try {
+      localStorage.setItem(this.storageKey, theme);
+      localStorage.setItem(this.fallbackStorageKey, theme);
+    } catch {}
 
     const effective = this.getEffectiveTheme();
     const root = document.documentElement;
 
     if (effective === 'dark') {
       root.setAttribute('data-theme', 'dark');
-      document.body?.classList.add('dark-theme');
+      if (document.body) document.body.classList.add('dark-theme');
     } else {
-      root.removeAttribute('data-theme');
-      document.body?.classList.remove('dark-theme');
+      root.setAttribute('data-theme', 'light');
+      if (document.body) document.body.classList.remove('dark-theme');
     }
 
     this.updateToggleIcons();
@@ -68,9 +75,13 @@ class CityBusThemeManager {
     return nextTheme;
   }
 
+  getToggleButtons() {
+    return document.querySelectorAll('.theme-toggle, .theme-toggle-btn, #theme-toggle-btn, [data-action="toggle-theme"]');
+  }
+
   updateToggleIcons() {
     const isDark = this.getEffectiveTheme() === 'dark';
-    document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+    this.getToggleButtons().forEach(btn => {
       btn.innerHTML = isDark ? '<i class="fa-solid fa-sun" style="color: #FBBF24;"></i>' : '<i class="fa-solid fa-moon"></i>';
       btn.setAttribute('title', isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode');
       btn.setAttribute('aria-label', isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode');
@@ -79,9 +90,8 @@ class CityBusThemeManager {
 
   attachThemeToggleButtons() {
     this.updateToggleIcons();
-    document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+    this.getToggleButtons().forEach(btn => {
       btn.removeEventListener('click', this._boundToggle);
-      this._boundToggle = () => this.toggleTheme();
       btn.addEventListener('click', this._boundToggle);
     });
   }

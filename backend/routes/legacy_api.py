@@ -20,11 +20,12 @@ legacy_bp = Blueprint('legacy_api', __name__, url_prefix='/api')
 
 @legacy_bp.route('/buses', methods=['GET'])
 def legacy_get_all_buses():
-    """Returns all buses."""
+    """Returns all buses with optional search and status filtering."""
     try:
         status_filter = request.args.get('status')
         route_filter = request.args.get('route_id')
-        buses = BusRepository.get_all(status_filter, route_filter)
+        search_query = request.args.get('q') or request.args.get('search')
+        buses = BusRepository.get_all(status_filter, route_filter, search=search_query)
         return jsonify({
             "success": True,
             "count": len(buses),
